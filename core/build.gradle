@@ -1,0 +1,11 @@
+apply plugin: "java"
+sourceCompatibility = 1.7
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceSets.main.java.srcDirs = ["src/"]
+eclipse.project {
+    name = appName + "-core"
+}
+dependencies {
+    compile project(':json-simple-1.1.1')
+    compile project(':gson-2.3.1')
+}
