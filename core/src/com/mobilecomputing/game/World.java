@@ -11,6 +11,7 @@ import com.mobilecomputing.game.GameObjects.Tanks.Tank;
 import com.mobilecomputing.game.GameObjects.WormHead;
 import com.mobilecomputing.game.GameObjects.WormTemplate;
 import com.mobilecomputing.game.Terrain.HaxWall;
+import com.mobilecomputing.game.menus.GameOverMenu;
 
 import helperDataStructures.Point2D;
 
@@ -264,7 +265,30 @@ public class World {
 		manageHitDetectionUpdate();
 		updateGameObjects(activeLocalObjects);
 		objectsCreatedThisTurn.clear();
+		//Spawn pallets
 		handlePelletSpawning();
+		//Handle camera zooming based on the length of the current snake;
+		float zoomDiff=Math.abs(getIntendedCameraZoomRatio()-cameraZoomRatio);
+
+		float minZoomDelta=0.1f;
+		float zoomDelta=Math.max(zoomDiff/10,minZoomDelta);
+		if (zoomDiff < minZoomDelta) {
+
+			cameraZoomRatio=getIntendedCameraZoomRatio();
+		}
+		else{
+			if(cameraZoomRatio<getIntendedCameraZoomRatio()) {
+				cameraZoomRatio = cameraZoomRatio + zoomDiff;
+			}
+			else{
+				cameraZoomRatio = cameraZoomRatio - zoomDiff;
+			}
+		}
+		if(activeCharacter!=null && activeCharacter.destroyed){
+			Controller.activeMenu=new GameOverMenu(0,0);
+		}
+
+
 	}
 
 	public void handlePelletSpawning(){
@@ -453,5 +477,17 @@ public class World {
 		gameEnded=true;
 
 	}
+
+	public float getIntendedCameraZoomRatio(){
+		if(activeCharacter!=null){
+			return activeCharacter.getCameraZoomRatio();
+
+		}
+		return 1;
+	}
+
+
+	public float cameraZoomRatio=1;
+
 	
 }

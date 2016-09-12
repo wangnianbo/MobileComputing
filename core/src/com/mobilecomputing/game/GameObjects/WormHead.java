@@ -1,5 +1,6 @@
 package com.mobilecomputing.game.GameObjects;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.mobilecomputing.game.Controller;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
@@ -23,22 +24,65 @@ public class WormHead extends LegacyGameObject{
         this.worm=worm;
         shapeCollider=new Rectangle(-14,-14,28,28);
     }
-    float moveSpeed=5;
+    float moveSpeed=5.5f;
+    float baseMoveSpeed=5.5f;
+    float baseBoostSpeed=8.5f;
     //public int score;
     public float lastDragX =UGameLogic.UNSET_INT;
     public float lastDragY =UGameLogic.UNSET_INT;
+    public float lastTapX =UGameLogic.UNSET_INT;
+    public float lastTapY =UGameLogic.UNSET_INT;
     double moveDir=0;
+    int timeSinceLastTap=100;
+    int boostTolerance=UGameLogic.lengthOfSecond/2;
+    boolean boosting=false;
+    public int timeBoosting=0;
+    public static boolean released=false;
     //What to do on each step
+    public static void SignalReleased(){
+        released=true;
+    }
+
     @Override
     public void update(){
         super.update();
         //lastDragX !=slitherio.lastWorldDragX || lastDragY !=slitherio.lastWorldDragY
+
+        timeSinceLastTap++;
+
         if(slitherio.dragging){
             double targetDir= UGameLogic.dirToPoint(x,y, slitherio.lastWorldDragX,slitherio.lastWorldDragY);
             moveDir=UGameLogic.TryRotateTowardsAlt(moveDir,targetDir,7,-720,720);
 
+            if(timeSinceLastTap<boostTolerance && released){
+                boosting=true;
+                timeBoosting=0;
+            }
+            if(getWorm().getTailSegments().size()<3){
+                boosting=false;
+            }
+            if(boosting){
+                timeBoosting++;
+                if(timeBoosting%(UGameLogic.lengthOfSecond/2)==UGameLogic.lengthOfSecond/2-1){
+                    worm.shrinkByOneSegment();
+
+                }
+            }
+            released=false;
             lastDragX =slitherio.lastWorldDragX;
             lastDragY =slitherio.lastWorldDragY;
+        }
+        else{
+            boosting=false;
+    }
+        if(slitherio.lastWorldTapX!=lastTapX || slitherio.lastWorldTapY!=lastTapY){
+            lastTapX=slitherio.lastWorldTapX;
+            lastTapY=slitherio.lastWorldTapY;
+            timeSinceLastTap=0;
+        }
+        moveSpeed=baseMoveSpeed;
+        if(boosting){
+            moveSpeed=baseBoostSpeed;
         }
 
         double dirR=UGameLogic.TrueBearingsToRadians(moveDir);
@@ -50,6 +94,8 @@ public class WormHead extends LegacyGameObject{
         //CheckMove((float)(x+moveSpeed*Math.cos(dirR)),(float)(y));
     }
 
+
+
     //What to draw to represent the object
     @Override
     public void render(){
@@ -59,7 +105,16 @@ public class WormHead extends LegacyGameObject{
        // UGameLogic.LogMsg("Rotation "+moveDir);
         SpriteImageData.rotation=(float)-moveDir;
         //Draw an image
+        if(boosting){
+           // SpriteImageData.color= Color.RED;
+        }
         SpriteImageData.Draw("wormHeadSegment",x,y);
+    }
+
+    public void subRenderDead(){
+        SpriteImageData.rotation=(float)-moveDir;
+
+        SpriteImageData.Draw("wormHeadSegmentDead",x,y);
     }
 
     //On touching another object...
@@ -68,7 +123,10 @@ public class WormHead extends LegacyGameObject{
         super.OnCollision(o);
         if(o instanceof Pellet){
             //score+=((Pellet)o).value;
-            worm.grow();
+            for(int i=0;i<((Pellet)o).value;i++){
+                worm.growByOneSegment();
+            }
+
         }
     }
 
@@ -76,13 +134,14 @@ public class WormHead extends LegacyGameObject{
     @Override
     public void onDeath(){
         super.onDeath();
+        worm.Die();
     }
 
     //Upon being removed from the world...
     @Override
     public void onDestroy(){
         super.onDestroy();
-        Controller.activeMenu=new GameOverMenu(0,0);
+
     }
 
     @Override

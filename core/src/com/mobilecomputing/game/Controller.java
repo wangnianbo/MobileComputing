@@ -98,6 +98,13 @@ public class Controller {
 		//camRotation+=0.1f;
 		//camRotation=(float)UGameLogic.PMod(camRotation,360);
 		//guiCam.zoom=0.9f;
+		float worldZoom=1;
+		if(world!=null){
+			worldZoom=world.cameraZoomRatio;
+		}
+
+		worldCam.zoom= Math.max(projectionWidth/((float)screenWidth),projectionHeight/((float)screenHeight))*worldZoom;
+
 
 		if(activeMenu!=null){
 			activeMenu.update();

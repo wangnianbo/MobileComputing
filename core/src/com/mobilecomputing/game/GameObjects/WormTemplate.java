@@ -1,9 +1,12 @@
 package com.mobilecomputing.game.GameObjects;
 
+import com.mobilecomputing.game.Controller;
 import com.mobilecomputing.game.UGameLogic;
+import com.mobilecomputing.game.menus.GameOverMenu;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 
 public class WormTemplate extends LegacyGameObject {
@@ -11,7 +14,8 @@ public class WormTemplate extends LegacyGameObject {
 
 
 
-
+    int pointsPerSegment=10;
+    public int wormLength;
     public WormTemplate(float x, float y, WormSegment startingSegment)
     {
         super(x, y);
@@ -28,10 +32,11 @@ public class WormTemplate extends LegacyGameObject {
         }
         if(head==null)
             ConstructHead();
+
     }
 
     public int getScore(){
-        return getTailSegments().size()*10;
+        return getTailSegments().size()*pointsPerSegment;
     }
 
 
@@ -68,8 +73,29 @@ public class WormTemplate extends LegacyGameObject {
 
     }
 
-    public WormSegment grow(){
+
+
+
+
+
+    public WormSegment growByOneSegment(){
         return addSegment(new WormSegment(this,tailEndSegment));
+    }
+
+    public WormSegment shrinkByOneSegment(){
+        WormSegment segmentToReturn=null;
+        if(tailEndSegment!=null && tailEndSegment.nextSegment!=null){
+            segmentToReturn=tailEndSegment;
+            getWorld().addObject(new FadingSegment(segmentToReturn));
+
+
+            WormSegment nextTail=segmentToReturn.nextSegment;
+            segmentToReturn.breakLinkFromChain();
+            tailEndSegment=nextTail;
+
+        }
+
+        return segmentToReturn;
     }
 
     private WormSegment addSegment(WormSegment segment) {
@@ -125,8 +151,32 @@ public class WormTemplate extends LegacyGameObject {
         super.onDestroy();
     }
 
+    @Override
+    public void onDeath(){
+        super.onDeath();
 
+        for(WormSegment segment:getTailSegments()){
+            getWorld().addObject(new FadingSegment(segment));
+        }
+        getWorld().addObject(new FadingSegment(head));
+    }
+
+
+    float lengthS=0;
     //Draw the head
+
+    public float getCameraZoomRatio(){
+        //if(getApproxLengthInPixels()!=lengthS) {
+            lengthS = getApproxLengthInPixels();
+
+            float relLength=(float)Math.sqrt(Controller.projectionWidth*Controller.projectionWidth+Controller.projectionHeight*Controller.projectionHeight);
+            relLength=relLength*3/4;
+            float ratio=lengthS/relLength;
+            return Math.max(ratio,1);
+
+        //}
+    }
+
     @Override
     public void render()
     {
@@ -140,6 +190,9 @@ public class WormTemplate extends LegacyGameObject {
             currentSegment.Render();
             //currentSegment = currentSegment.prevSegment;
         }
+
+
+
         head.render();
     }
 
@@ -177,6 +230,7 @@ public class WormTemplate extends LegacyGameObject {
             {
                 //s.EarlyUpdate();
                 //Move the segment closer;
+                Random random=new Random();
                 if (curFollowing != null)
                 {
                     //Get the direction to the segment;
@@ -184,6 +238,9 @@ public class WormTemplate extends LegacyGameObject {
                     //Bring the segment within minimum distance;
                     double dirSR = UGameLogic.TrueBearingsToRadians(dirS);
                     float dist=segmentDistance;
+                    if(head.boosting){
+                        dist+=random.nextInt(5)-2;
+                    }
 
 
                     s.x = curFollowing.x + dist * (float)Math.cos(dirSR);
@@ -215,6 +272,10 @@ public class WormTemplate extends LegacyGameObject {
 
     //Distance between segments;
     public int segmentDistance = 10;
+    public int getApproxLengthInPixels(){
+        return segmentDistance*(1+getTailSegments().size());
+    }
+
     @Override
     public void OnAddToWorld()
     {

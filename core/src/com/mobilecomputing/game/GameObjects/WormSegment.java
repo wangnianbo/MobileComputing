@@ -132,13 +132,16 @@ public class WormSegment extends LegacyGameObject{
         // UGameLogic.LogMsg("Rotation "+moveDir);
        // SpriteImageData.rotation=(float)-moveDir;
         //Draw an image
-        SpriteImageData.Draw("wormSegment",x,y);
+        subRender();
         //SpriteImageData.DrawShape(shapeCollider,x,y);
 
 
         //DrawImage("wormSegment", x, y);
     }
 
+    public void subRender(){
+        SpriteImageData.Draw("wormSegment",x,y);
+    }
 
 
     /*
