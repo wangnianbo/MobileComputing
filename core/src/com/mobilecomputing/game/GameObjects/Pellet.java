@@ -24,6 +24,7 @@ public class Pellet extends LegacyGameObject{
         Random random=new Random();
         value=1+random.nextInt(4);
         float s=(float)Math.sqrt(value);
+        value=value*2;
         shapeCollider=new Rectangle(-11*s,-11*s,22*s,22*s);
         int redIndex=0;
         int greenIndex=1;

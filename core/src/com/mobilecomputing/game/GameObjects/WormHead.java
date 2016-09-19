@@ -48,41 +48,19 @@ public class WormHead extends LegacyGameObject{
         super.update();
         //lastDragX !=slitherio.lastWorldDragX || lastDragY !=slitherio.lastWorldDragY
 
-        timeSinceLastTap++;
 
-        if(slitherio.dragging){
-            double targetDir= UGameLogic.dirToPoint(x,y, slitherio.lastWorldDragX,slitherio.lastWorldDragY);
-            moveDir=UGameLogic.TryRotateTowardsAlt(moveDir,targetDir,7,-720,720);
 
-            if(timeSinceLastTap<boostTolerance && released){
-                boosting=true;
-                timeBoosting=0;
-            }
-            if(getWorm().getTailSegments().size()<3){
-                boosting=false;
-            }
-            if(boosting){
-                timeBoosting++;
-                if(timeBoosting%(UGameLogic.lengthOfSecond/2)==UGameLogic.lengthOfSecond/2-1){
-                    worm.shrinkByOneSegment();
-
-                }
-            }
-            released=false;
-            lastDragX =slitherio.lastWorldDragX;
-            lastDragY =slitherio.lastWorldDragY;
-        }
-        else{
-            boosting=false;
-    }
-        if(slitherio.lastWorldTapX!=lastTapX || slitherio.lastWorldTapY!=lastTapY){
-            lastTapX=slitherio.lastWorldTapX;
-            lastTapY=slitherio.lastWorldTapY;
-            timeSinceLastTap=0;
-        }
         moveSpeed=baseMoveSpeed;
+        if(worm.wormLength<=20){
+            boosting=false;
+        }
         if(boosting){
             moveSpeed=baseBoostSpeed;
+            timeBoosting++;
+            if(timeBoosting%(UGameLogic.lengthOfSecond/20)==UGameLogic.lengthOfSecond/20-1){
+                worm.wormLength--;
+
+            }
         }
 
         double dirR=UGameLogic.TrueBearingsToRadians(moveDir);
@@ -94,6 +72,9 @@ public class WormHead extends LegacyGameObject{
         //CheckMove((float)(x+moveSpeed*Math.cos(dirR)),(float)(y));
     }
 
+    public double getTargetDir(){
+        return moveDir;
+    }
 
 
     //What to draw to represent the object
@@ -123,10 +104,12 @@ public class WormHead extends LegacyGameObject{
         super.OnCollision(o);
         if(o instanceof Pellet){
             //score+=((Pellet)o).value;
+            worm.wormLength+=((Pellet)o).value;
+            /*
             for(int i=0;i<((Pellet)o).value;i++){
                 worm.growByOneSegment();
             }
-
+            */
         }
     }
 

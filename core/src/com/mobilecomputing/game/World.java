@@ -10,6 +10,7 @@ import com.mobilecomputing.game.GameObjects.Pellet;
 import com.mobilecomputing.game.GameObjects.Tanks.Tank;
 import com.mobilecomputing.game.GameObjects.WormHead;
 import com.mobilecomputing.game.GameObjects.WormTemplate;
+import com.mobilecomputing.game.GameObjects.WormTemplate_Player;
 import com.mobilecomputing.game.Terrain.HaxWall;
 import com.mobilecomputing.game.menus.GameOverMenu;
 
@@ -162,8 +163,8 @@ public class World {
 	}
 
 	public void construct(boolean isMultiplayer){
-		WormTemplate worm=((WormTemplate)addObject(new WormTemplate(width/2,height*3/4,5)));
-		this.activeCharacter=worm;
+
+		this.activeCharacter=((WormTemplate_Player)addObject(new WormTemplate_Player(width/2,height*3/4,5)));
 		this.isMultiplayer=isMultiplayer;
 
 		int dimW=640/UGameLogic.tileWidth;

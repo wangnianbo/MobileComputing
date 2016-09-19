@@ -32,14 +32,8 @@ public class WormTemplate extends LegacyGameObject {
         }
         if(head==null)
             ConstructHead();
-
+        wormLength=getTailSegments().size()*pointsPerSegment;
     }
-
-    public int getScore(){
-        return getTailSegments().size()*pointsPerSegment;
-    }
-
-
 
     public WormTemplate(float x, float y, int segmentNo)
     {
@@ -50,7 +44,16 @@ public class WormTemplate extends LegacyGameObject {
         CreateSegments(segmentNo);
         if (head == null)
             ConstructHead();
+        wormLength=getTailSegments().size()*pointsPerSegment;
     }
+
+    public int getScore(){
+        return getTailSegments().size()*pointsPerSegment;
+    }
+
+
+
+
 
     public WormHead ConstructHead() {
         head=new WormHead(x,y,this);
@@ -70,6 +73,7 @@ public class WormTemplate extends LegacyGameObject {
             tailEndSegment=newSegment;
             lastSegment = newSegment;
         }
+        wormLength=getTailSegments().size()*pointsPerSegment;
 
     }
 
@@ -162,12 +166,12 @@ public class WormTemplate extends LegacyGameObject {
     }
 
 
-    float lengthS=0;
+    //float lengthS=0;
     //Draw the head
 
     public float getCameraZoomRatio(){
         //if(getApproxLengthInPixels()!=lengthS) {
-            lengthS = getApproxLengthInPixels();
+            float lengthS = getApproxLengthInPixels();
 
             float relLength=(float)Math.sqrt(Controller.projectionWidth*Controller.projectionWidth+Controller.projectionHeight*Controller.projectionHeight);
             relLength=relLength*3/4;
@@ -255,6 +259,18 @@ public class WormTemplate extends LegacyGameObject {
                 curFollowing = s;
             }
         }
+
+        int curSize=getTailSegments().size();
+        if(wormLength/10>curSize){
+           growByOneSegment();
+        }
+        else if(wormLength/10<curSize){
+            shrinkByOneSegment();
+        }
+
+
+
+
         /*
         for (WormSegment s :markedSegments)
         {

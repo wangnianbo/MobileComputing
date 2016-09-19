@@ -156,6 +156,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	@Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		// ignore if its not left mouse button or first touch pointer
 		//UGameLogic.LogMsg("Coordinate "+screenX+" "+screenY);
+		UGameLogic.LogMsg("Pointer "+pointer);
 		if (button != Input.Buttons.LEFT || pointer > 0) return false;
 
 
