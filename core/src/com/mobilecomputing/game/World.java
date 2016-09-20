@@ -10,6 +10,7 @@ import com.mobilecomputing.game.GameObjects.Pellet;
 import com.mobilecomputing.game.GameObjects.Tanks.Tank;
 import com.mobilecomputing.game.GameObjects.WormHead;
 import com.mobilecomputing.game.GameObjects.WormTemplate;
+import com.mobilecomputing.game.GameObjects.WormTemplate_Enemy;
 import com.mobilecomputing.game.GameObjects.WormTemplate_Player;
 import com.mobilecomputing.game.Terrain.HaxWall;
 import com.mobilecomputing.game.menus.GameOverMenu;
@@ -18,8 +19,8 @@ import helperDataStructures.Point2D;
 
 
 public class World {
-	public int width=1500;
-	public int height=1500;
+	public int width=2000;
+	public int height=2000;
 	private ArrayList<LegacyGameObject> activeLocalObjects = new ArrayList<LegacyGameObject>();
 	public ArrayList<LegacyGameObject> getActiveLocalObjects(){
 		return activeLocalObjects;
@@ -165,6 +166,8 @@ public class World {
 	public void construct(boolean isMultiplayer){
 
 		this.activeCharacter=((WormTemplate_Player)addObject(new WormTemplate_Player(width/2,height*3/4,5)));
+		addObject(new WormTemplate_Enemy(width/2+200,height*3/4,10));
+		addObject(new WormTemplate_Enemy(width/2-200,height*3/4,5));
 		this.isMultiplayer=isMultiplayer;
 
 		int dimW=640/UGameLogic.tileWidth;
@@ -313,6 +316,7 @@ public class World {
 		int u=64;
 		ArrayList<Point2D> possiblePoints=new ArrayList<Point2D>();
 		for(int i=u;i<width -u;i+=u){
+
 			for(int j=u;j<height-u;j+=u) {
 
 				if(newPellet.CheckMove(i,j)){
@@ -322,9 +326,12 @@ public class World {
 			}
 		}
 		if(possiblePoints.size()>0){
+			int spawnIndex=Controller.spawnRandom.nextInt(possiblePoints.size());
+			UGameLogic.LogMsg("Spawn Index "+spawnIndex);
+			Point2D nextPoint=possiblePoints.get(spawnIndex);
 
-			Point2D nextPoint=possiblePoints.get(Controller.spawnRandom.nextInt(possiblePoints.size()));
 			newPellet.x=nextPoint.x;
+			UGameLogic.LogMsg("new pellet X "+newPellet.x);
 			newPellet.y=nextPoint.y;
 			addObject(newPellet);
 		}

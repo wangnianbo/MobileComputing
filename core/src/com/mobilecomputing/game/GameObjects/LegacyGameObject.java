@@ -388,6 +388,19 @@ public class LegacyGameObject extends ViewableObject {
     }
 
 
+                	/*if(this.shapeCollider instanceof Polygon && obj2.shapeCollider instanceof Polygon){
+            		Polygon poly1=((Polygon)this.shapeCollider);
+            		Polygon poly2=((Polygon)this.shapeCollider);
+                  	poly1.setPosition(newX, newY);
+                  	poly2.setPosition(obj2.x,obj2.y);
+                  	return Intersector.overlapConvexPolygons(poly1,poly2);
+            	}
+            	*/
+
+    public boolean secondaryHitTest(LegacyGameObject o,float x,float y){
+        return true;
+    }
+
 
     //Check if this object is touching another given object;
     public boolean CollisionOffsetBetween(LegacyGameObject obj2, float newX, float newY, boolean useMargin)
@@ -396,17 +409,13 @@ public class LegacyGameObject extends ViewableObject {
         {
             if (this.shapeCollider != null && obj2.shapeCollider != null)
             {
-  
-            	
+
+                if(CollisionOffsetBetween(this.shapeCollider,x,y,obj2.shapeCollider,obj2.x,obj2.y)){
+                    return secondaryHitTest(obj2,newX,newY);
+                }
+            	/*
                 //boolean res = simpleCollider.CheckOffsetTouching(newX, newY, obj2.simpleCollider, obj2.x, obj2.y, useMargin);
-            	/*if(this.shapeCollider instanceof Polygon && obj2.shapeCollider instanceof Polygon){
-            		Polygon poly1=((Polygon)this.shapeCollider);
-            		Polygon poly2=((Polygon)this.shapeCollider);
-                  	poly1.setPosition(newX, newY);
-                  	poly2.setPosition(obj2.x,obj2.y);
-                  	return Intersector.overlapConvexPolygons(poly1,poly2);
-            	}
-            	*/
+
             	if(this.shapeCollider instanceof Rectangle && obj2.shapeCollider instanceof Rectangle){
             		
             		Rectangle rec1=((Rectangle)this.shapeCollider);
@@ -565,13 +574,192 @@ public class LegacyGameObject extends ViewableObject {
             		
 
             	}
-            	
+            	*/
             }
         }
         return false;
     }
 
-    
+    //Check if this object is touching another given object;
+    public static boolean CollisionOffsetBetween(Shape2D collider1, float newX, float newY, Shape2D collider2,float x2,float y2)
+    {
+
+
+
+
+                //boolean res = simpleCollider.CheckOffsetTouching(newX, newY, obj2.simpleCollider, obj2.x, obj2.y, useMargin);
+            	/*if(this.shapeCollider instanceof Polygon && obj2.shapeCollider instanceof Polygon){
+            		Polygon poly1=((Polygon)this.shapeCollider);
+            		Polygon poly2=((Polygon)this.shapeCollider);
+                  	poly1.setPosition(newX, newY);
+                  	poly2.setPosition(obj2.x,obj2.y);
+                  	return Intersector.overlapConvexPolygons(poly1,poly2);
+            	}
+            	*/
+                if(collider1 instanceof Rectangle && collider2 instanceof Rectangle){
+
+                    Rectangle rec1=((Rectangle)collider1);
+                    Rectangle rec2=((Rectangle)collider2);
+                    float prev_x1=rec1.x;
+                    float prev_y1=rec1.y;
+                    float prev_x2=rec2.x;
+                    float prev_y2=rec2.y;
+
+
+                    rec1.setPosition(newX+prev_x1, newY+prev_y1);
+                    rec2.setPosition(x2+prev_x2,y2+prev_y2);
+                    boolean res=Intersector.overlaps(rec1,rec2);
+                    rec1.setPosition(prev_x1, prev_y1);
+                    rec2.setPosition(prev_x2,prev_y2);
+                    return res;
+                }
+                else if(collider1 instanceof Rectangle && collider2 instanceof Circle){
+
+
+
+                    Rectangle rec1=((Rectangle)collider1);
+                    Circle circle2=((Circle)collider2);
+                    float prev_x1=rec1.x;
+                    float prev_y1=rec1.y;
+                    float prev_x2=circle2.x;
+                    float prev_y2=circle2.y;
+                    rec1.setPosition(newX+prev_x1, newY+prev_y1);
+                    circle2.setPosition(x2+prev_x2,y2+prev_y2);
+                    boolean res=Intersector.overlaps(circle2,rec1);
+                    rec1.setPosition(prev_x1, prev_y1);
+                    circle2.setPosition(prev_x2,prev_y2);
+                    return res;
+                }
+                else if(collider1 instanceof Circle && collider2 instanceof Rectangle){
+
+                    Rectangle rect2=((Rectangle)collider2);
+                    Circle circle1=((Circle)collider1);
+                    float prev_x1=circle1.x;
+                    float prev_y1=circle1.y;
+                    float prev_x2=rect2.x;
+                    float prev_y2=rect2.y;
+                    circle1.setPosition(newX+prev_x1, newY+prev_y1);
+                    rect2.setPosition(x2+prev_x2,y2+prev_y2);
+                    boolean res=Intersector.overlaps(circle1,rect2);
+                    circle1.setPosition(prev_x1, prev_y1);
+                    rect2.setPosition(prev_x2,prev_y2);
+                    return res;
+
+                }
+                else if(collider1 instanceof Circle && collider2 instanceof Circle){
+
+
+                    Circle circle1=((Circle)collider1);
+                    Circle circle2=((Circle)collider2);
+                    float prev_x1=circle1.x;
+                    float prev_y1=circle1.y;
+                    float prev_x2=circle2.x;
+                    float prev_y2=circle2.y;
+                    circle1.setPosition(newX+prev_x1, newY+prev_y1);
+                    circle2.setPosition(x2+prev_x2,y2+prev_y2);
+                    boolean res=Intersector.overlaps(circle1,circle2);
+                    circle1.setPosition(prev_x1, prev_y1);
+                    circle2.setPosition(prev_x2,prev_y2);
+                    return res;
+                }
+
+                else if(collider1 instanceof Polygon && collider2 instanceof Polygon){
+
+                    Polygon poly1=((Polygon)collider1);
+                    Polygon poly2=((Polygon)collider2);
+                    float prev_x1=poly1.getX();
+                    float prev_y1=poly1.getY();
+                    float prev_x2=poly2.getX();
+                    float prev_y2=poly2.getY();
+                    poly1.setPosition(newX+prev_x1, newY+prev_y1);
+                    poly2.setPosition(x2+prev_x2,y2+prev_y2);
+
+                    boolean res=Intersector.overlapConvexPolygons(poly1,poly2);
+                    poly1.setPosition(prev_x1, prev_y1);
+                    poly2.setPosition(prev_x2,prev_y2);
+                    return res;
+                }
+
+                else if(collider1 instanceof Polygon || collider2 instanceof Polygon){
+                    float prev_x1=0;
+                    float prev_y1=0;
+                    float prev_x2=0;
+                    float prev_y2=0;
+                    Polygon poly1;
+                    Polygon poly2;
+                    Rectangle rect2;
+                    Circle circle2;
+                    Rectangle rect1;
+                    Circle circle1;
+                    if(collider1 instanceof Polygon){
+                        poly1=((Polygon)collider1);
+                        prev_x1=poly1.getX();
+                        prev_y1=poly1.getY();
+                        poly1.setPosition(newX+prev_x1, newY+prev_y1);
+                        boolean retVal=false;
+                        if(collider2 instanceof Circle){
+                            circle2=((Circle)collider2);
+                            prev_x2=circle2.x;
+                            prev_y2=circle2.y;
+                            circle2.setPosition(x2+prev_x2, y2+prev_y2);
+                            retVal=UGameLogic.isCollision(poly1, circle2);
+                            circle2.setPosition(prev_x2,prev_y2);
+
+                        }
+                        if(collider2 instanceof Rectangle){
+                            rect2=((Rectangle)collider2);
+                            prev_x2=rect2.x;
+                            prev_y2=rect2.y;
+                            rect2.setPosition(x2+prev_x2, y2+prev_y2);
+                            retVal=UGameLogic.isCollision(poly1,rect2);
+                            rect2.setPosition(prev_x2,prev_y2);
+
+                        }
+                        poly1.setPosition(prev_x1, prev_y1);
+                        return retVal;
+
+                    }
+
+                    else if(collider2 instanceof Polygon){
+                        poly2=((Polygon)collider2);
+                        prev_x2=poly2.getX();
+                        prev_y2=poly2.getY();
+                        poly2.setPosition(x2+prev_x2,y2+prev_y2);
+                        boolean retVal=false;
+                        if(collider1 instanceof Circle){
+                            circle1=((Circle)collider1);
+                            prev_x1=circle1.x;
+                            prev_y1=circle1.y;
+                            circle1.setPosition(newX+prev_x1, newY+prev_y1);
+                            UGameLogic.isCollision(poly2,circle1);
+                            circle1.setPosition(prev_x1,prev_y1);
+
+                        }
+                        if(collider1 instanceof Rectangle){
+                            rect1=((Rectangle)collider1);
+                            prev_x1=rect1.x;
+                            prev_y1=rect1.y;
+                            rect1.setPosition(newX+prev_x1, newY+prev_y1);
+                            retVal= UGameLogic.isCollision(poly2,rect1);
+                            rect1.setPosition(prev_x1,prev_y1);
+
+                        }
+                        poly2.setPosition(prev_x2,prev_y2);
+                        return retVal;
+                    }
+
+
+
+
+
+
+        }
+        return false;
+    }
+
+
+
+
     public boolean ShouldTreatAsSolid(LegacyGameObject other, boolean caller)
     {
 

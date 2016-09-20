@@ -28,26 +28,17 @@ public class WormHead extends LegacyGameObject{
     float baseMoveSpeed=5.5f;
     float baseBoostSpeed=8.5f;
     //public int score;
-    public float lastDragX =UGameLogic.UNSET_INT;
-    public float lastDragY =UGameLogic.UNSET_INT;
-    public float lastTapX =UGameLogic.UNSET_INT;
-    public float lastTapY =UGameLogic.UNSET_INT;
+
     double moveDir=0;
-    int timeSinceLastTap=100;
-    int boostTolerance=UGameLogic.lengthOfSecond/2;
+
     boolean boosting=false;
     public int timeBoosting=0;
-    public static boolean released=false;
-    //What to do on each step
-    public static void SignalReleased(){
-        released=true;
-    }
 
     @Override
     public void update(){
         super.update();
         //lastDragX !=slitherio.lastWorldDragX || lastDragY !=slitherio.lastWorldDragY
-
+        moveDir= UGameLogic.TryRotateTowardsAlt(moveDir,getTargetDir(),7,0,360);
 
 
         moveSpeed=baseMoveSpeed;
@@ -110,6 +101,11 @@ public class WormHead extends LegacyGameObject{
                 worm.growByOneSegment();
             }
             */
+        }
+        if(o instanceof WormTemplate){
+            if(worm!=o){
+                Die();
+            }
         }
     }
 

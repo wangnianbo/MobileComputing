@@ -1,8 +1,12 @@
 package com.mobilecomputing.game.GameObjects;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.mobilecomputing.game.Controller;
+import com.mobilecomputing.game.Drawables.SpriteImageData;
 import com.mobilecomputing.game.UGameLogic;
 import com.mobilecomputing.game.menus.GameOverMenu;
+
+import org.w3c.dom.css.Rect;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +23,7 @@ public class WormTemplate extends LegacyGameObject {
     public WormTemplate(float x, float y, WormSegment startingSegment)
     {
         super(x, y);
-
+        shapeCollider=new Rectangle(0,0,1,1);
         //simpleCollider = bodyRegionCollider;
 
         headSegment = startingSegment;
@@ -33,12 +37,13 @@ public class WormTemplate extends LegacyGameObject {
         if(head==null)
             ConstructHead();
         wormLength=getTailSegments().size()*pointsPerSegment;
+
     }
 
     public WormTemplate(float x, float y, int segmentNo)
     {
         super(x,y);
-
+        shapeCollider=new Rectangle(0,0,1,1);
         //simpleCollider = bodyRegionCollider;
 
         CreateSegments(segmentNo);
@@ -48,7 +53,7 @@ public class WormTemplate extends LegacyGameObject {
     }
 
     public int getScore(){
-        return getTailSegments().size()*pointsPerSegment;
+        return wormLength;
     }
 
 
@@ -184,7 +189,9 @@ public class WormTemplate extends LegacyGameObject {
     @Override
     public void render()
     {
+
         super.render();
+        SpriteImageData.DrawShape(shapeCollider, x, y);
         // simpleCollider.DrawOutline(x, y);
         LegacyGameObject t = this;
         ArrayList<WormSegment> segments=getTailSegments();
@@ -200,10 +207,69 @@ public class WormTemplate extends LegacyGameObject {
         head.render();
     }
 
+    @Override
+    public boolean secondaryHitTest(LegacyGameObject o,float x,float y){
+        ArrayList<WormSegment> segments=getTailSegments();
+        for(WormSegment segment:segments){
+            if(segment.CollisionOffsetBetween(o,segment.x,segment.y,true)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public void update()
     {
+        //Update the bounds of the collider;
+        int boundLeft=0;
+        int boundTop=0;
+        int boundRight=1;
+        int boundBase=1;
+        int tempRad=16;
+        LegacyGameObject curFollowing1 = head;
+        for (WormSegment s :getTailSegments()) {
+            if (!s.destroyed) {
+            }
+            int propBoundLeft=(int)(curFollowing1.x-x-tempRad);
+            int propBoundRight=(int)(curFollowing1.x-x+tempRad);
+            int propBoundTop=(int)(curFollowing1.y-y-tempRad);
+            int propBoundBase=(int)(curFollowing1.y-y+tempRad);
+            if(propBoundLeft<boundLeft){
+                boundLeft=(int)propBoundLeft;
+            }
+            if(propBoundTop<boundTop){
+                boundTop=propBoundTop;
+            }
+            if(propBoundRight>boundRight){
+                boundRight=(int)propBoundRight;
+            }
+            if(propBoundBase>boundBase){
+                boundBase=(int)propBoundBase;
+            }
+            curFollowing1=s;
+
+        }
+        int propBoundLeft=(int)(curFollowing1.x-x-tempRad);
+        int propBoundRight=(int)(curFollowing1.x-x+tempRad);
+        int propBoundTop=(int)(curFollowing1.y-y-tempRad);
+        int propBoundBase=(int)(curFollowing1.y-y+tempRad);
+        if(propBoundLeft<boundLeft){
+            boundLeft=(int)propBoundLeft;
+        }
+        if(propBoundTop<boundTop){
+            boundTop=propBoundTop;
+        }
+        if(propBoundRight>boundRight){
+            boundRight=(int)propBoundRight;
+        }
+        if(propBoundBase>boundBase){
+            boundBase=(int)propBoundBase;
+        }
+
+        ((Rectangle)shapeCollider).set(boundLeft,boundTop,boundRight-boundLeft,boundBase-boundTop);
+
+
 
         super.update();
         /*
@@ -227,7 +293,9 @@ public class WormTemplate extends LegacyGameObject {
 
         //Make sure that the previous segments follow the head;
         LegacyGameObject curFollowing = this;
-
+        //if(this instanceof WormTemplate_Enemy)
+        //UGameLogic.LogMsg("break ");
+        double prevDir=getDirectionAiming()+180;
         for (WormSegment s :getTailSegments())
         {
             if (!s.destroyed)
@@ -239,9 +307,21 @@ public class WormTemplate extends LegacyGameObject {
                 {
                     //Get the direction to the segment;
                     double dirS = UGameLogic.dirToPoint(curFollowing.x, curFollowing.y, s.x, s.y);
+                    if(curFollowing.x==s.x && curFollowing.y==s.y){
+                        dirS=180;
+                    }
+                    //dirS=180;
+                    prevDir=dirS;
+
                     //Bring the segment within minimum distance;
                     double dirSR = UGameLogic.TrueBearingsToRadians(dirS);
-                    float dist=segmentDistance;
+
+                    float curDistance=UGameLogic.GetDistanceBetween(s,curFollowing);
+                    float sepDistance=Math.max(curDistance-1,0);
+                    float dist=Math.min(segmentDistance,sepDistance);
+                    //if(this instanceof WormTemplate_Enemy)
+                    //UGameLogic.LogMsg("dir "+dirS);
+
                     if(head.boosting){
                         dist+=random.nextInt(5)-2;
                     }

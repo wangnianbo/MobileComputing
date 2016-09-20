@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.mobilecomputing.game.GameObjects.WormHead;
+import com.mobilecomputing.game.GameObjects.WormHead_Player;
 
 public class slitherio extends ApplicationAdapter implements InputProcessor {
 	/*SpriteBatch batch;
@@ -156,7 +157,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	@Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		// ignore if its not left mouse button or first touch pointer
 		//UGameLogic.LogMsg("Coordinate "+screenX+" "+screenY);
-		UGameLogic.LogMsg("Pointer "+pointer);
+		//UGameLogic.LogMsg("Pointer "+pointer);
 		if (button != Input.Buttons.LEFT || pointer > 0) return false;
 
 
@@ -204,7 +205,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	@Override public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		if (button != Input.Buttons.LEFT || pointer > 0) return false;
 		//camera.unproject(tp.set(screenX, screenY, 0));
-		WormHead.SignalReleased();
+		WormHead_Player.SignalReleased();
 
 		dragging = false;
 		return true;
