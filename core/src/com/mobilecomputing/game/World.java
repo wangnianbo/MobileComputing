@@ -319,19 +319,19 @@ public class World {
 
 			for(int j=u;j<height-u;j+=u) {
 
-				if(newPellet.CheckMove(i,j)){
+				//if(newPellet.CheckMove(i,j)){
 					possiblePoints.add(new Point2D(i,j));
-				}
+				//}
 
 			}
 		}
 		if(possiblePoints.size()>0){
 			int spawnIndex=Controller.spawnRandom.nextInt(possiblePoints.size());
-			UGameLogic.LogMsg("Spawn Index "+spawnIndex);
+			//UGameLogic.LogMsg("Spawn Index "+spawnIndex);
 			Point2D nextPoint=possiblePoints.get(spawnIndex);
 
 			newPellet.x=nextPoint.x;
-			UGameLogic.LogMsg("new pellet X "+newPellet.x);
+			//UGameLogic.LogMsg("new pellet X "+newPellet.x);
 			newPellet.y=nextPoint.y;
 			addObject(newPellet);
 		}

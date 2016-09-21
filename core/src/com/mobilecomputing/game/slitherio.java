@@ -133,7 +133,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 
 	@Override
 	public void dispose () {
-		batch.dispose();
+		//batch.dispose();
 		//img.dispose();
 	}
 
