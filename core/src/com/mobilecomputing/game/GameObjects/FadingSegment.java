@@ -84,7 +84,7 @@ public class FadingSegment extends LegacyGameObject{
         //SpriteImageData.color = new Color(1, 1, 1, Math.min(scale + 0.5f, 1));
         if(head!=null){
 
-            head.subRenderDead();
+            head.subRender();
         }
         if(segment!=null) {
 

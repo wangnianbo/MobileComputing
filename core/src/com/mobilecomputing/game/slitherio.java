@@ -129,6 +129,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 		Controller.update();
 		//UGameLogic.LogMsg("Rendering");
 		Controller.render();
+
 	}
 
 	@Override

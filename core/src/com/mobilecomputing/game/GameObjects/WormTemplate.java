@@ -3,6 +3,7 @@ package com.mobilecomputing.game.GameObjects;
 import com.badlogic.gdx.math.Rectangle;
 import com.mobilecomputing.game.Controller;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
+import com.mobilecomputing.game.WormSkins.*;
 import com.mobilecomputing.game.UGameLogic;
 import com.mobilecomputing.game.menus.GameOverMenu;
 
@@ -16,15 +17,19 @@ import java.util.Random;
 public class WormTemplate extends LegacyGameObject {
 
 
-
-
+	public static final WormSkin defaultSkin=new WormSkin_SimpleColor();
+	
+	public WormSkin skin=defaultSkin;
     int pointsPerSegment=10;
     public int wormLength;
+    
+    
     public WormTemplate(float x, float y, WormSegment startingSegment)
     {
         super(x, y);
         shapeCollider=new Rectangle(0,0,1,1);
         //simpleCollider = bodyRegionCollider;
+        
 
         headSegment = startingSegment;
         WormSegment lastSegment = headSegment;
@@ -191,7 +196,7 @@ public class WormTemplate extends LegacyGameObject {
     {
 
         super.render();
-        SpriteImageData.DrawShape(shapeCollider, x, y);
+        //SpriteImageData.DrawShape(shapeCollider, x, y);
         // simpleCollider.DrawOutline(x, y);
         LegacyGameObject t = this;
         ArrayList<WormSegment> segments=getTailSegments();

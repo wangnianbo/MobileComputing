@@ -11,9 +11,9 @@ import java.util.Random;
  * Created by Venom on 29/08/2016.
  */
 public class Pellet extends LegacyGameObject{
-    int value=1;
+    public int value=1;
 
-    Color color;
+    public Color color;
     public Pellet(float x, float y){
         super(x,y);
         //For detecting collisions

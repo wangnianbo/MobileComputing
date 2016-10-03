@@ -410,8 +410,9 @@ public class LegacyGameObject extends ViewableObject {
             if (this.shapeCollider != null && obj2.shapeCollider != null)
             {
 
-                if(CollisionOffsetBetween(this.shapeCollider,x,y,obj2.shapeCollider,obj2.x,obj2.y)){
-                    return secondaryHitTest(obj2,newX,newY);
+                if(CollisionOffsetBetween(this.shapeCollider,newX,newY,obj2.shapeCollider,obj2.x,obj2.y)){
+                
+                    return secondaryHitTest(obj2,newX,newY) && obj2.secondaryHitTest(this,obj2.x,obj2.y);
                 }
             	/*
                 //boolean res = simpleCollider.CheckOffsetTouching(newX, newY, obj2.simpleCollider, obj2.x, obj2.y, useMargin);

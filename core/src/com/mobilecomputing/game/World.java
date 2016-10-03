@@ -2,7 +2,7 @@ package com.mobilecomputing.game;
 
 import java.util.ArrayList;
 
-
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
 import com.mobilecomputing.game.GameObjects.LegacyGameObject;
@@ -13,6 +13,7 @@ import com.mobilecomputing.game.GameObjects.WormTemplate;
 import com.mobilecomputing.game.GameObjects.WormTemplate_Enemy;
 import com.mobilecomputing.game.GameObjects.WormTemplate_Player;
 import com.mobilecomputing.game.Terrain.HaxWall;
+import com.mobilecomputing.game.WormSkins.*;
 import com.mobilecomputing.game.menus.GameOverMenu;
 
 import helperDataStructures.Point2D;
@@ -166,8 +167,36 @@ public class World {
 	public void construct(boolean isMultiplayer){
 
 		this.activeCharacter=((WormTemplate_Player)addObject(new WormTemplate_Player(width/2,height*3/4,5)));
-		addObject(new WormTemplate_Enemy(width/2+200,height*3/4,10));
-		addObject(new WormTemplate_Enemy(width/2-200,height*3/4,5));
+		this.activeCharacter.skin=new WormSkin_Chameleon2();
+		ArrayList<WormSkin> skins=new ArrayList<WormSkin>();
+		skins.add(new WormSkin_BlackAndGold());
+		skins.add(new WormSkin_Pokey(true));
+		skins.add(new WormSkin_Pokey(false));
+		skins.add(new WormSkin_Christmas());
+		skins.add(new WormSkin_SimpleColor(new Color(UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,1)));
+		ArrayList<WormTemplate> otherWorms=new ArrayList<WormTemplate>();
+		
+		WormTemplate_Enemy enemy1=new WormTemplate_Enemy(width/2+200,height*3/4,10);
+		addObject(enemy1);
+		otherWorms.add(enemy1);
+
+		
+		WormTemplate_Enemy enemy2=new WormTemplate_Enemy(width/2-200,height*3/4,5);
+		otherWorms.add(enemy2);
+
+		addObject(enemy2);
+		//Assign random skins to other worms;
+		while(otherWorms.size()>0 && skins.size()>0){
+			WormTemplate worm=otherWorms.get(0);
+
+			int skinIndex=UGameLogic.effectsRandom.nextInt(skins.size());
+			otherWorms.remove(0);
+
+			WormSkin skin=skins.get(skinIndex);
+			skins.remove(skinIndex);
+			worm.skin=skin;
+		}
+		
 		this.isMultiplayer=isMultiplayer;
 
 		int dimW=640/UGameLogic.tileWidth;

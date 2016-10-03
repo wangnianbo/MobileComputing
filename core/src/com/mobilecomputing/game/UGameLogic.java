@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
@@ -496,6 +498,7 @@ public class UGameLogic {
     	return cachedRectangles.get(key);
     }
     private static HashMap<String,Polygon> cachedPolyQuads=new HashMap<String,Polygon>();
+	public static Random effectsRandom=new Random();
     public static Polygon getCachedPolyQuad(float w,float h){
     	String key=((int)w)+" "+((int)h);
     	

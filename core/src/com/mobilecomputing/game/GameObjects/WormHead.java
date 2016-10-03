@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.mobilecomputing.game.Controller;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
+import com.mobilecomputing.game.WormSkins.WormSkin_Chameleon;
+import com.mobilecomputing.game.WormSkins.WormSkin_Chameleon2;
 import com.mobilecomputing.game.UGameLogic;
 import com.mobilecomputing.game.menus.GameOverMenu;
 import com.mobilecomputing.game.slitherio;
@@ -74,28 +76,57 @@ public class WormHead extends LegacyGameObject{
         super.render();
         //Reset scaling, rotation and color values to defaults.
         SpriteImageData.ResetProperties();
-       // UGameLogic.LogMsg("Rotation "+moveDir);
+        	subRender();
+    }
+    
+    public void subRender(){
+        // UGameLogic.LogMsg("Rotation "+moveDir);
         SpriteImageData.rotation=(float)-moveDir;
         //Draw an image
         if(boosting){
            // SpriteImageData.color= Color.RED;
         }
-        SpriteImageData.Draw("wormHeadSegment",x,y);
+    	if(worm!=null && worm.skin!=null){
+    		worm.skin.subRenderHead(this);
+    	}
+    	else{
+    		SpriteImageData.Draw("wormSegment",x,y);
+        	SpriteImageData.color=Color.WHITE;
+        	if(destroyed){
+            	SpriteImageData.Draw("wormFaceDead",x,y);
+        	}
+        	else{
+        		SpriteImageData.Draw("wormFace",x,y);
+        	}
+    	}
     }
-
+    
+    /*
     public void subRenderDead(){
         SpriteImageData.rotation=(float)-moveDir;
-
-        SpriteImageData.Draw("wormHeadSegmentDead",x,y);
+    	if(worm!=null && worm.skin!=null){
+    		SpriteImageData.color=worm.skin.getHeadColor();
+    	}
+        SpriteImageData.Draw("wormSegment",x,y);
+        SpriteImageData.color=Color.WHITE;
+        SpriteImageData.Draw("wormFaceDead",x,y);
     }
+    */
 
     //On touching another object...
+   
     @Override
     public void OnCollision(LegacyGameObject o){
         super.OnCollision(o);
         if(o instanceof Pellet){
             //score+=((Pellet)o).value;
             worm.wormLength+=((Pellet)o).value;
+            if( worm.skin instanceof WormSkin_Chameleon2){
+            	((WormSkin_Chameleon2)(worm.skin)).onConsumePellet((Pellet)o);
+            }
+            else if( worm.skin instanceof WormSkin_Chameleon){
+            	((WormSkin_Chameleon)(worm.skin)).onConsumePellet((Pellet)o);
+            }
             /*
             for(int i=0;i<((Pellet)o).value;i++){
                 worm.growByOneSegment();

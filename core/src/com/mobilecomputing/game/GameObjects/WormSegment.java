@@ -1,5 +1,8 @@
 package com.mobilecomputing.game.GameObjects;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
 
@@ -127,8 +130,10 @@ public class WormSegment extends LegacyGameObject{
         //simpleCollider.DrawOutline(x, y, SpriteImageData.color);
 
         super.render();
+
         //Reset scaling, rotation and color values to defaults.
         SpriteImageData.ResetProperties();
+
         // UGameLogic.LogMsg("Rotation "+moveDir);
        // SpriteImageData.rotation=(float)-moveDir;
         //Draw an image
@@ -138,9 +143,29 @@ public class WormSegment extends LegacyGameObject{
 
         //DrawImage("wormSegment", x, y);
     }
+    
+    public int offsetWithinSnake(){
+    	ArrayList<WormSegment> segments=worm.getTailSegments();
+    	for(int i=0;i<segments.size();i++){
+    		if(segments.get(i)==this){
+    			return i;
+    		}
+    	}
+    	
+    	
+    	return 0;
+    }
 
     public void subRender(){
-        SpriteImageData.Draw("wormSegment",x,y);
+    	if(worm!=null && worm.skin!=null){
+
+
+    		worm.skin.subRenderTailSegment(this);
+    	}
+    	else{
+            SpriteImageData.Draw("wormSegment",x,y);
+    	}
+
     }
 
 
