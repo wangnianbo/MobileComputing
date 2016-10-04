@@ -39,6 +39,7 @@ public class WormHead extends LegacyGameObject{
     @Override
     public void update(){
         super.update();
+
         //lastDragX !=slitherio.lastWorldDragX || lastDragY !=slitherio.lastWorldDragY
         moveDir= UGameLogic.TryRotateTowardsAlt(moveDir,getTargetDir(),7,0,360);
 
@@ -50,7 +51,7 @@ public class WormHead extends LegacyGameObject{
         if(boosting){
             moveSpeed=baseBoostSpeed;
             timeBoosting++;
-            if(timeBoosting%(UGameLogic.lengthOfSecond/20)==UGameLogic.lengthOfSecond/20-1){
+            if(timeBoosting%(UGameLogic.lengthOfSecond/5)==UGameLogic.lengthOfSecond/5-1){
                 worm.wormLength--;
 
             }

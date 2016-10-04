@@ -6,6 +6,4 @@ eclipse.project {
     name = appName + "-core"
 }
 dependencies {
-    compile project(':json-simple-1.1.1')
-    compile project(':gson-2.3.1')
 }

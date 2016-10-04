@@ -241,7 +241,7 @@ public class SpriteImageData extends BasicImageData {
 	}
 	
 	public void Draw(float x,float y,float proposedOriginX,float proposedOriginY){
-		rotation=rotation+0.5f;
+		//rotation=rotation+0.5f;
 		//UGameLogic.LogMsg("origin X " +sprite.getOriginX()+" Height " +sprite.getHeight());
 		y=Controller.screenHeight-getHeight()-y;
 

@@ -1,7 +1,11 @@
 package com.mobilecomputing.game.menus;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.mobilecomputing.game.Controller;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
+import com.mobilecomputing.game.GameObjects.LegacyGameObject;
+import com.mobilecomputing.game.GameObjects.WormTemplate_Enemy;
 import com.mobilecomputing.game.FontController;
 import com.mobilecomputing.game.SoundController;
 
@@ -31,9 +35,24 @@ public class DefaultGameHud extends Menu {
 		super.render();
 		SpriteImageData.ResetProperties();
 		FontController.ResetProperties();
-		if(Controller.world!=null && Controller.world.activeCharacter!=null)
-			FontController.DrawString("SCORE "+Controller.world.activeCharacter.getScore() ,Controller.projectionWidth/2-10, 10);
+		
 
+		if(Controller.world!=null && Controller.world.activeCharacter!=null){
+			int rank=1;
+			int wormCount=1;
+			int score=Controller.world.activeCharacter.getScore();
+			for(LegacyGameObject o: Controller.world.getActiveLocalObjects()){
+				if(o instanceof WormTemplate_Enemy){
+					int rivalScore=((WormTemplate_Enemy)o).getScore();
+					wormCount++;
+					if(score<rivalScore){
+						rank++;
+					}
+				}
+			}
+			
+			FontController.DrawString("SCORE "+ score+"   RANK "+rank+"/"+wormCount+"     FPS:"+ Gdx.graphics.getFramesPerSecond(),Controller.projectionWidth/2-10, 10);
+		}
 		FontController.ResetProperties();
 	}
 

@@ -51,16 +51,21 @@ public class Pellet extends LegacyGameObject{
         colorIntensities[highlightedColorIndex]=random.nextFloat()*0.45f+0.55f;
         color=new Color(colorIntensities[0],colorIntensities[1],colorIntensities[2],1);
     }
+    @Override
+    public void OnAddToWorld(){
+        super.update();
+    }
 
     //What to do on each step
     @Override
     public void update(){
-        super.update();
+
     }
 
     //What to draw to represent the object
     @Override
     public void render(){
+
         super.render();
         //Reset scaling, rotation and color values to defaults.
         SpriteImageData.ResetProperties();
@@ -68,6 +73,16 @@ public class Pellet extends LegacyGameObject{
         SpriteImageData.scaleY=(float)Math.sqrt(value);
         SpriteImageData.color=color;
         SpriteImageData.Draw("explosionFlare",x,y);
+    }
+
+    @Override
+    public boolean ShouldRegisterTouch(LegacyGameObject o,boolean caller){
+        if(o instanceof Pellet){
+            if(o.step>2 && step>2){
+                return true;
+            }
+        }
+        return super.ShouldRegisterTouch(o,caller);
     }
 
     //On touching another object...

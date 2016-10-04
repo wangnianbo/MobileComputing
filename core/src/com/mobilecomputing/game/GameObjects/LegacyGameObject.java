@@ -228,7 +228,6 @@ public class LegacyGameObject extends ViewableObject {
     public boolean CheckPositionAvailable(float newX, float newY)
     {
 
-
     	if(newX<0 || newY<0 || newX>world.width || newY>world.height){
     		return false;
     	}
@@ -1140,7 +1139,15 @@ public class LegacyGameObject extends ViewableObject {
 
     	}
     }
-    
+
+    @Override
+    public void instanceDestroy(){
+        boolean clearChunks=!destroyed;
+        super.instanceDestroy();
+        if(clearChunks)
+            ClearChunksNotTouching();
+    }
+
     public int damageToDisplay=0;
     public void queueDisplayDamage(int damageAmount){
     	damageToDisplay+=damageAmount;

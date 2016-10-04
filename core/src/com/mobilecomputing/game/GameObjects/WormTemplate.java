@@ -20,7 +20,7 @@ public class WormTemplate extends LegacyGameObject {
 	public static final WormSkin defaultSkin=new WormSkin_SimpleColor();
 	
 	public WormSkin skin=defaultSkin;
-    int pointsPerSegment=15;
+    int pointsPerSegment=20;
     public int wormLength;
     
     
@@ -346,10 +346,10 @@ public class WormTemplate extends LegacyGameObject {
         }
 
         int curSize=getTailSegments().size();
-        if(wormLength/10>curSize){
+        if(wormLength/pointsPerSegment>curSize){
            growByOneSegment();
         }
-        else if(wormLength/10<curSize){
+        else if(wormLength/pointsPerSegment<curSize){
             shrinkByOneSegment();
         }
 

@@ -1,6 +1,7 @@
 package com.mobilecomputing.game;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
@@ -21,8 +22,9 @@ import helperDataStructures.Point2D;
 
 
 public class World {
-	public int width=2560;
-	public int height=2560;
+	
+	public int width=3840;
+	public int height=3840;
 	public TerrainChunk[][] terrainChunks;
 	public TerrainChunk GetTerrainChunk(int chunkX,int chunkY){
 		if(chunkX<0 || chunkY<0 || chunkX>=terrainChunks.length || chunkY>=terrainChunks[0].length){
@@ -178,8 +180,8 @@ public class World {
 	public void construct(boolean isMultiplayer){
 		//Initialize terrain chunks.
 
-		int widthInChunks=width/TerrainChunk.chunkWidth;
-		int heightInChunks=height/TerrainChunk.chunkWidth;
+		int widthInChunks=(int)Math.ceil(width/(float)TerrainChunk.chunkWidth);
+		int heightInChunks=(int)Math.ceil(height/(float)TerrainChunk.chunkWidth);
 		terrainChunks=new TerrainChunk[widthInChunks][heightInChunks];
 		for(int i=0;i<widthInChunks;i+=1){
 			for(int j=0;j<heightInChunks;j+=1){
@@ -188,7 +190,7 @@ public class World {
 		}
 		
 		
-		this.activeCharacter=((WormTemplate_Player)addObject(new WormTemplate_Player(width/2,height*3/4,5)));
+		this.activeCharacter=((WormTemplate_Player)addObject(new WormTemplate_Player(width/2,height*3/4-70,5)));
 		this.activeCharacter.skin=new WormSkin_Chameleon2();
 		ArrayList<WormSkin> skins=new ArrayList<WormSkin>();
 		skins.add(new WormSkin_BlackAndGold());
@@ -219,7 +221,7 @@ public class World {
 			worm.skin=skin;
 		}
 		//Spawn in multiple pellets:
-		for(int i=0;i<100;i++){
+		for(int i=0;i<50;i++){
 		spawnPellet();
 		}
 		
@@ -230,13 +232,14 @@ public class World {
 		int dimH=480/UGameLogic.tileWidth;
 		boolean[][] tempWallArray=new boolean[dimW][dimH];
 		for(int i=1;i<dimW-1;i++){
-			if(i<3 || i>5)
-				tempWallArray[i][3]=true;
+			if(i<3 || i>5){
+				//tempWallArray[i][3]=true;
+			}
 
 		}
 		for(int j=1;j<dimH;j++){
-			if(j!=3)
-			tempWallArray[4][j]=true;
+			//if(j!=3)
+			//tempWallArray[4][j]=true;
 
 		}
 
@@ -358,11 +361,22 @@ public class World {
 				pelletCount++;
 			}
 		}
-		if(Controller.step%100==5 && pelletCount<20) {
+		if(Controller.step%10==4 && pelletCount<50) {
 			spawnPellet();
+
+
 		}
-
-
+		
+		int enemyCount=0;
+		for(LegacyGameObject o:getActiveLocalObjects()){
+			if(o instanceof WormTemplate_Enemy){
+				enemyCount++;
+			}
+		}
+		if(enemyCount<20 && Controller.step%((UGameLogic.lengthOfSecond*2))==1){
+			spawnEnemy();
+		}
+		
 
 	}
 
@@ -396,6 +410,73 @@ public class World {
 
 	}
 
+	
+	public void spawnEnemy(){
+		Random r=Controller.spawnRandom;
+		int wormSize=Controller.spawnRandom.nextInt(27+1)+3;
+		ArrayList<WormSkin> skins=new ArrayList<WormSkin>();
+		skins.add(new WormSkin_Chameleon());
+		skins.add(new WormSkin_BlackAndGold());
+		skins.add(new WormSkin_Pokey(true));
+		skins.add(new WormSkin_Pokey(false));
+		skins.add(new WormSkin_Christmas());
+		skins.add(new WormSkin_SimpleColor(new Color(UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,1)));
+		ArrayList<WormTemplate> otherWorms=new ArrayList<WormTemplate>();
+		
+		WormTemplate_Enemy enemy1=new WormTemplate_Enemy(0,0,wormSize);
+		enemy1.skin=skins.get(UGameLogic.effectsRandom.nextInt(skins.size()));
+		int pixelSize=enemy1.getApproxLengthInPixels();
+		for(int i=0;i<3;i++){
+			int spawnX=r.nextInt(width-pixelSize*2)+pixelSize;
+			int spawnY=r.nextInt(height-pixelSize*2)+pixelSize;
+			
+			if(UGameLogic.GetDistanceBetween(activeCharacter.x,activeCharacter.y,spawnX,spawnY)>pixelSize+1000){
+				enemy1.x=spawnX;
+				enemy1.y=spawnY;
+				enemy1.head.x=spawnX;
+				enemy1.head.y=spawnY;
+				addObject(enemy1);
+				break;
+			}
+			
+
+		}
+
+		
+		
+		
+		
+		
+		
+		Pellet newPellet=new Pellet(0,0);
+		newPellet.SetWorld(this);
+		int u=64;
+		ArrayList<Point2D> possiblePoints=new ArrayList<Point2D>();
+		for(int i=u;i<width -u;i+=u){
+
+			for(int j=u;j<height-u;j+=u) {
+
+				//if(newPellet.CheckMove(i,j)){
+					possiblePoints.add(new Point2D(i,j));
+				//}
+
+			}
+		}
+		if(possiblePoints.size()>0){
+			int spawnIndex=Controller.spawnRandom.nextInt(possiblePoints.size());
+			
+			//UGameLogic.LogMsg("Spawn Index "+spawnIndex);
+			Point2D nextPoint=possiblePoints.get(spawnIndex);
+
+			newPellet.x=nextPoint.x;
+			//UGameLogic.LogMsg("new pellet X "+newPellet.x);
+			newPellet.y=nextPoint.y;
+			
+			addObject(newPellet);
+		}
+
+	}
+	
 
 
 
@@ -412,12 +493,22 @@ public class World {
 
 		FontController.ResetProperties();
 		renderGameObjects(activeLocalObjects);
+		SpriteImageData.rotation=0;
+		SpriteImageData.scaleX=width;
+		SpriteImageData.scaleY=2;
+		SpriteImageData.Draw("lonePixel",0,0,false);
+		SpriteImageData.Draw("lonePixel",0,height,false);
+		SpriteImageData.scaleX=2;
+		SpriteImageData.scaleY=height;
+		SpriteImageData.Draw("lonePixel",0,0,false);
+		SpriteImageData.Draw("lonePixel",width,0,false);
 
-
-		SpriteImageData.DrawShape(new Rectangle(1,0,3,height),0,0);
+		/*SpriteImageData.DrawShape(new Rectangle(1,0,3,height),0,0);
 		SpriteImageData.DrawShape(new Rectangle(1,0,3,height),width-3,0);
 		SpriteImageData.DrawShape(new Rectangle(0,1,width,3),0,0);
 		SpriteImageData.DrawShape(new Rectangle(0,1,width,3),0,height-3);
+		*/
+
 	}
 
 
@@ -480,8 +571,8 @@ public class World {
             collisionList.clear();
         }
         if(activeChunkCount>0 && Controller.step%10==0){
-            UGameLogic.LogMsg("-------");
-            UGameLogic.LogMsg("Active chunks "+activeChunkCount);
+           // UGameLogic.LogMsg("-------");
+           // UGameLogic.LogMsg("Active chunks "+activeChunkCount);
         }
 
 	}
