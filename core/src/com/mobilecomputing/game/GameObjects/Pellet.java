@@ -14,13 +14,18 @@ public class Pellet extends LegacyGameObject{
     public int value=1;
 
     public Color color;
+    public int pelletId;
+    private static int lastAssignedPelletId=-1;
     public Pellet(float x, float y){
         super(x,y);
         //For detecting collisions
 
         //Determine color;
         //Draw an image
-
+        pelletId=lastAssignedPelletId+1;
+        
+        lastAssignedPelletId++;
+        
         Random random=new Random();
         value=1+random.nextInt(4);
         float s=(float)Math.sqrt(value);
@@ -71,7 +76,7 @@ public class Pellet extends LegacyGameObject{
         if(o instanceof WormHead){
             instanceDestroy();
         }
-        if(o instanceof Pellet && o.step>step){
+        if(o instanceof Pellet && ((Pellet) o).pelletId<pelletId){
 
             instanceDestroy();
         }

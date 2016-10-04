@@ -1,3 +1,55 @@
+package com.mobilecomputing.game.Terrain;
+
+import java.util.HashSet;
+
+import com.mobilecomputing.game.TileObjectPosition;
+import com.mobilecomputing.game.UGameLogic;
+import com.mobilecomputing.game.World;
+import com.mobilecomputing.game.GameObjects.LegacyGameObject;
+
+//DEALING WITH OBJECTS WITHIN THE CHUNK;
+
+//Objects contained within the chunk;
+
+
+public class TerrainChunk{
+	public HashSet<LegacyGameObject> localObjects=new HashSet<LegacyGameObject>();
+	public int chunkX;
+	public int chunkY;
+	public static final int chunkWidth=256;
+	public int x;
+	public int y;
+	public World world;
+	public TerrainChunk(World world,int chunkX,int chunkY){
+		this.world=world;
+		this.chunkX=chunkX;
+		this.chunkY=chunkY;
+		this.x=chunkX*chunkWidth;
+		this.y=chunkY*chunkWidth;
+	}
+	
+	public HashSet<LegacyGameObject> GetRegularObjectsIn()
+	{
+		return localObjects;
+	}
+
+	int activeObjectsTouching=0;
+	//Add a game object to the chunk's hash set of contained objects
+	public void AddGameObject(LegacyGameObject g)
+	{
+		localObjects.add(g);
+	}
+	//Add a game object to the chunk's hash set of contained objects
+	public void RemoveGameObject(LegacyGameObject g)
+	{
+		if (localObjects.contains(g))
+		{
+			localObjects.remove(g);
+		}
+	}
+}
+
+
 /*
 package com.mygdx.game.Terrain;
 

@@ -13,6 +13,7 @@ import com.mobilecomputing.game.GameObjects.WormTemplate;
 import com.mobilecomputing.game.GameObjects.WormTemplate_Enemy;
 import com.mobilecomputing.game.GameObjects.WormTemplate_Player;
 import com.mobilecomputing.game.Terrain.HaxWall;
+import com.mobilecomputing.game.Terrain.TerrainChunk;
 import com.mobilecomputing.game.WormSkins.*;
 import com.mobilecomputing.game.menus.GameOverMenu;
 
@@ -20,8 +21,18 @@ import helperDataStructures.Point2D;
 
 
 public class World {
-	public int width=2000;
-	public int height=2000;
+	public int width=2560;
+	public int height=2560;
+	public TerrainChunk[][] terrainChunks;
+	public TerrainChunk GetTerrainChunk(int chunkX,int chunkY){
+		if(chunkX<0 || chunkY<0 || chunkX>=terrainChunks.length || chunkY>=terrainChunks[0].length){
+			return null;
+		}
+		return terrainChunks[chunkX][chunkY];
+	}
+	
+	
+	
 	private ArrayList<LegacyGameObject> activeLocalObjects = new ArrayList<LegacyGameObject>();
 	public ArrayList<LegacyGameObject> getActiveLocalObjects(){
 		return activeLocalObjects;
@@ -165,7 +176,18 @@ public class World {
 	}
 
 	public void construct(boolean isMultiplayer){
+		//Initialize terrain chunks.
 
+		int widthInChunks=width/TerrainChunk.chunkWidth;
+		int heightInChunks=height/TerrainChunk.chunkWidth;
+		terrainChunks=new TerrainChunk[widthInChunks][heightInChunks];
+		for(int i=0;i<widthInChunks;i+=1){
+			for(int j=0;j<heightInChunks;j+=1){
+				terrainChunks[i][j] =new TerrainChunk(this,i,j);
+			}
+		}
+		
+		
 		this.activeCharacter=((WormTemplate_Player)addObject(new WormTemplate_Player(width/2,height*3/4,5)));
 		this.activeCharacter.skin=new WormSkin_Chameleon2();
 		ArrayList<WormSkin> skins=new ArrayList<WormSkin>();
@@ -196,6 +218,11 @@ public class World {
 			skins.remove(skinIndex);
 			worm.skin=skin;
 		}
+		//Spawn in multiple pellets:
+		for(int i=0;i<100;i++){
+		spawnPellet();
+		}
+		
 		
 		this.isMultiplayer=isMultiplayer;
 
@@ -356,12 +383,14 @@ public class World {
 		}
 		if(possiblePoints.size()>0){
 			int spawnIndex=Controller.spawnRandom.nextInt(possiblePoints.size());
+			
 			//UGameLogic.LogMsg("Spawn Index "+spawnIndex);
 			Point2D nextPoint=possiblePoints.get(spawnIndex);
 
 			newPellet.x=nextPoint.x;
 			//UGameLogic.LogMsg("new pellet X "+newPellet.x);
 			newPellet.y=nextPoint.y;
+			
 			addObject(newPellet);
 		}
 
@@ -396,7 +425,7 @@ public class World {
 	//Handle  hit detection between all objects;
 	public void manageHitDetectionUpdate()
 	{
-
+/*
 		ArrayList<LegacyGameObject> collisionList = new ArrayList<LegacyGameObject>();
 		for(LegacyGameObject o : activeLocalObjects){
 			collisionList.add(o);
@@ -414,37 +443,47 @@ public class World {
 			}
 		}
 		collisionList.clear();
-
-        /*
+*/
         ArrayList<LegacyGameObject> collisionList = new ArrayList<LegacyGameObject>();
-        foreach (TerrainChunk chunk in activeChunks)
-        {
-            foreach (LegacyGameObject o in chunk.GetRegularObjectsIn())
-            {
-                if (o as Shield != null)
-                {
-                    collisionList.Insert(0, o);
-                }
-                else
-                {
-                    collisionList.Add(o);
-                }
-            }
 
-            for (int i = 0; i < collisionList.Count; i++)
-            {
-                LegacyGameObject o = collisionList[i];
-                collisionList.RemoveAt(i);
-                i = i - 1;
-                if (o.active && isRemoved(o) == false)
+
+        int activeChunkCount=0;
+        for (TerrainChunk[] chunkRow:terrainChunks)
+        {
+        	for(TerrainChunk chunk:chunkRow){
+                for (LegacyGameObject o : chunk.GetRegularObjectsIn())
                 {
-                    o.ReactToObjectCollisions(o.getObjectsTouchingAtPosition(o.x, o.y, true, false, true, collisionList));
-                    o.ReactToTileCollisions();
+
+                        collisionList.add(o);
+                    
                 }
-            }
-            collisionList.Clear();
+                if(collisionList.size()>0){
+                	//UGameLogic.LogMsg(""+collisionList.size());
+                	activeChunkCount++;
+                }
+                
+
+                for (int i = 0; i < collisionList.size(); i++)
+                {
+
+                    LegacyGameObject o = collisionList.get(i);
+                    collisionList.remove(i);
+                    i = i - 1;
+                    if (o.active && isRemoved(o) == false)
+                    {
+                        o.ReactToObjectCollisions(o.getObjectsTouchingAtPosition(o.x, o.y, true, false, true, collisionList));
+
+                    }
+                }
+        	}
+
+            collisionList.clear();
         }
-        */
+        if(activeChunkCount>0 && Controller.step%10==0){
+            UGameLogic.LogMsg("-------");
+            UGameLogic.LogMsg("Active chunks "+activeChunkCount);
+        }
+
 	}
 
 

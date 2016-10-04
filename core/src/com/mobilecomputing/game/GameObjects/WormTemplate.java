@@ -20,7 +20,7 @@ public class WormTemplate extends LegacyGameObject {
 	public static final WormSkin defaultSkin=new WormSkin_SimpleColor();
 	
 	public WormSkin skin=defaultSkin;
-    int pointsPerSegment=10;
+    int pointsPerSegment=15;
     public int wormLength;
     
     

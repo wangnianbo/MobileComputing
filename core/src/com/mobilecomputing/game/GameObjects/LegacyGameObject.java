@@ -2,7 +2,9 @@ package com.mobilecomputing.game.GameObjects;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import helperDataStructures.Point2D;
 
@@ -17,6 +19,7 @@ import com.mobilecomputing.game.UGameLogic;
 import com.mobilecomputing.game.ViewableObject;
 import com.mobilecomputing.game.World;
 import com.mobilecomputing.game.Terrain.HaxWall;
+import com.mobilecomputing.game.Terrain.TerrainChunk;
 
 
 public class LegacyGameObject extends ViewableObject {
@@ -101,10 +104,7 @@ public class LegacyGameObject extends ViewableObject {
 
     
     
-    public void UpdateRegionsTouching()
-    {
-    	
-    }
+
     @Override 
     public void earlyUpdate(){
     	super.earlyUpdate();
@@ -149,7 +149,7 @@ public class LegacyGameObject extends ViewableObject {
     		}
     		
     	}
-    	
+    	 UpdateRegionsTouching();
     
     }
     
@@ -837,7 +837,159 @@ public class LegacyGameObject extends ViewableObject {
     	SpriteImageData.DrawShape(shapeCollider, x,y);
     }
     
+    //CHUNK MANAGEMENT
+    public HashMap<TerrainChunk, Boolean> chunksTouching=new HashMap<TerrainChunk,Boolean>();
+    //Meant to keep track of changes changes to chunks each iteration;;
+    private int prevChunkActiveCount = 0;
 
+    //Previous region covering
+
+
+    /*private int prevXOnChunk = UGameLogic.UNSET_INT;
+    private int prevYOnChunk = UGameLogic.UNSET_INT;*/
+    private int prevXMinOnChunk = UGameLogic.UNSET_INT;
+    private int prevYMinOnChunk = UGameLogic.UNSET_INT;
+    private int prevXMaxOnChunk = UGameLogic.UNSET_INT;
+    private int prevYMaxOnChunk = UGameLogic.UNSET_INT;
+    
+
+    
+    
+    public void UpdateRegionsTouching()
+    {
+        int divider = TerrainChunk.chunkWidth;
+        /*
+        int x1 = ((int)(x / divider));
+        int y1 = ((int)(y / divider));
+        int activationRadius = GetActivationRadius();
+        //If you haven't moved outside the chunks you've occupied, than don't bother changing anything;
+
+        if (x1 == prevXOnChunk && y1 == prevYOnChunk && prevActivationRadius == activationRadius)
+        {
+            return;
+        }
+
+        //Record the radius;
+        prevXOnChunk = x1;
+        prevYOnChunk = y1;
+        prevActivationRadius = activationRadius;
+        */
+        if (world == null)
+        {
+            return;
+        }
+        TerrainChunk[][] terrainChunks = world.terrainChunks;
+        int margin = UGameLogic.tileWidth;
+        //GET BOUNDS COVERED;
+        int minChunkX = (int)((leftX()-margin) / divider);
+        minChunkX = Math.max(0, minChunkX);
+        int maxChunkX = (int)((rightX()+margin) / divider);
+        maxChunkX = Math.min(terrainChunks.length - 1, maxChunkX);
+        int minChunkY = (int)((topY()-margin) / divider);
+        minChunkY = Math.max(0, minChunkY);
+        int maxChunkY = (int)((baseY()+margin) / divider);
+        maxChunkY = Math.min(terrainChunks[0].length - 1, maxChunkY);
+        if (minChunkX == prevXMinOnChunk && maxChunkX == prevXMaxOnChunk && minChunkY == prevYMinOnChunk && maxChunkY == prevYMaxOnChunk)
+        {
+
+            return;
+        }
+
+        prevXMinOnChunk = minChunkX;
+        prevXMaxOnChunk = maxChunkX;
+        prevYMinOnChunk = minChunkY;
+        prevYMaxOnChunk = maxChunkY;
+
+        //Go through each of the chunks
+        for (int i = minChunkX; i <= maxChunkX; i++)
+        {
+            for (int j = minChunkY; j <= maxChunkY; j++)
+            {
+                TerrainChunk chunk = world.GetTerrainChunk(i, j);
+                if (chunk != null)
+                {
+                    chunksTouching.put(chunk, true);
+                    chunk.AddGameObject(this);
+                }
+            }
+        }
+        //Clear the chunks that aren't covered by this object;
+        ClearChunksNotTouching();
+    }
+    
+    public void ClearChunksNotTouching()
+    {
+        int len = chunksTouching.size();
+        //No chunks added? Don't worry about it then;
+        // || !chunksChangedSinceLastStep
+        if (len == prevChunkActiveCount)
+        {
+            return;
+        }
+        //ArrayList<TerrainChunk> keys = new ArrayList<TerrainChunk>(chunksTouching.keySet());
+        //Deactivate unused chunks;
+        ArrayList<TerrainChunk> chunksCopy = new ArrayList<TerrainChunk>(chunksTouching.keySet());
+
+       
+        for(TerrainChunk piece : chunksCopy) {
+            //The chunk needs to be of the same world;
+            boolean touching = piece.world  == world;
+            if (touching)
+            {
+
+            }
+            if (!chunksTouching.get(piece) || !touching)
+            {
+                chunksTouching.remove(piece);
+                piece.RemoveGameObject(this);
+            }
+            else
+            {
+                //Mark the piece for possible deactivation for the next time;
+                chunksTouching.put(piece,false);
+            }
+        }
+        //Reset in preperation for the next UpdateRegionsTouching() iteration
+
+    }
+    //OFFSET COORDINATES
+    public float leftX(){
+    	float cx=x;
+    	if(shapeCollider instanceof Rectangle){
+    		cx+=((Rectangle) shapeCollider).x;
+    	}
+    	return cx;
+    }
+    
+    public float rightX(){
+    	float cx=x;
+    	
+    	if(shapeCollider instanceof Rectangle){
+    		Rectangle rect=((Rectangle) shapeCollider);
+    		cx+=rect.x+rect.width;
+    	}
+    	return cx;
+    }
+    
+    
+    public float topY(){
+    	float cy=y;
+    	if(shapeCollider instanceof Rectangle){
+    		Rectangle rect=((Rectangle) shapeCollider);
+    		cy+=rect.y;
+    	}
+    	return cy;
+    }
+    
+    public float baseY(){
+    	float cy=y;
+    	if(shapeCollider instanceof Rectangle){
+    		Rectangle rect=((Rectangle) shapeCollider);
+    		cy+=rect.y+rect.height;
+    	}
+    	return cy;
+    }
+    
     public float centerX()
     {
 
@@ -859,6 +1011,8 @@ public class LegacyGameObject extends ViewableObject {
             return cy;
 
     }
+    
+    
     
     public Point2D colliderCenter(Shape2D shape){
     	float x1=0;
@@ -992,6 +1146,7 @@ public class LegacyGameObject extends ViewableObject {
     	damageToDisplay+=damageAmount;
     	
     }
+    
     
 }
 
