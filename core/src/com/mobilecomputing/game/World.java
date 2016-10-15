@@ -23,8 +23,8 @@ import helperDataStructures.Point2D;
 
 public class World {
 	
-	public int width=3840;
-	public int height=3840;
+	public int width=2560;
+	public int height=2560;
 	public TerrainChunk[][] terrainChunks;
 	public TerrainChunk GetTerrainChunk(int chunkX,int chunkY){
 		if(chunkX<0 || chunkY<0 || chunkX>=terrainChunks.length || chunkY>=terrainChunks[0].length){
@@ -565,10 +565,23 @@ public class World {
                         o.ReactToObjectCollisions(o.getObjectsTouchingAtPosition(o.x, o.y, true, false, true, collisionList));
 
                     }
+
                 }
         	}
 
             collisionList.clear();
+        }
+        for (TerrainChunk[] chunkRow:terrainChunks)
+        {
+        	for(TerrainChunk chunk:chunkRow){
+                for (LegacyGameObject o : chunk.GetRegularObjectsIn())
+                {
+                	if(o==null || o.destroyed ){
+                		UGameLogic.LogMsg("test");
+                	}
+                }
+                
+             }
         }
         if(activeChunkCount>0 && Controller.step%10==0){
            // UGameLogic.LogMsg("-------");

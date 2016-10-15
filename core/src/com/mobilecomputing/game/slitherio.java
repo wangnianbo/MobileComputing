@@ -123,9 +123,41 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	}
 	*/
 
+    public static float framesForUpdateDoubled = 0;
 	@Override
 	public void render () {
+		float lastFrameDiff = Gdx.graphics.getDeltaTime()*1000/60f;
+		boolean allowDoublingOfFrames=true;
+		 double minExpectedSpeed = 1.0;
+        if (allowDoublingOfFrames)
+        {
+            int maxFrameMultiplier = 2;
+            if (lastFrameDiff > minExpectedSpeed)
+            {
+                framesForUpdateDoubled += (float)Math.min(((lastFrameDiff - minExpectedSpeed)) / minExpectedSpeed, 2*maxFrameMultiplier);
 
+            }
+            else
+            {
+                framesForUpdateDoubled += (float)Math.max((lastFrameDiff - minExpectedSpeed) / minExpectedSpeed, -1*maxFrameMultiplier);
+            }
+            //Use to be 3 instead of 6
+            framesForUpdateDoubled = Math.max(framesForUpdateDoubled, -3);
+            framesForUpdateDoubled = Math.min(framesForUpdateDoubled, 7);
+            //lastFramesForUpdatesDoubled = (int)framesForUpdateDoubled;
+            for (int i = 0; i < maxFrameMultiplier*2-1; i++)
+            {
+                if (framesForUpdateDoubled >= 1f)
+                {
+                    framesForUpdateDoubled -= 1f;
+                    Controller.update();
+                }
+
+            }
+        }
+
+		
+		
 		Controller.update();
 		//UGameLogic.LogMsg("Rendering");
 		Controller.render();

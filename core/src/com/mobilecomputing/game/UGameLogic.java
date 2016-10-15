@@ -26,6 +26,7 @@ public class UGameLogic {
 		}
 		return listToReturn;
 	}
+    public static final int frameRateModifier=1;
 	public static final int tileWidth=64;
 	public static final int UNSET_INT=-10000;
 	public static void LogMsg(String string){

@@ -294,7 +294,7 @@ public class LegacyGameObject extends ViewableObject {
         HashSet<LegacyGameObject> listOfObjects = new HashSet<LegacyGameObject>();
         if (world == null)
             return UGameLogic.hashSetToList(listOfObjects);
-        if (touchableObjects == null)
+        if (touchableObjects == null && world!=null)
         {
         	
         	/*
@@ -318,7 +318,38 @@ public class LegacyGameObject extends ViewableObject {
                 {
                 */
                     //skip objects you can't touch;
-        		for(LegacyGameObject other :world.getActiveLocalObjects()){
+
+            TerrainChunk[][] terrainChunks = world.terrainChunks;
+            int divider=TerrainChunk.chunkWidth;
+            int margin = UGameLogic.tileWidth;
+            float prevX=x;
+            float prevY=y;
+            x=x1;
+            y=y1;
+            //GET BOUNDS COVERED;
+            int minChunkX = (int)((leftX()-margin) / divider);
+            minChunkX = Math.max(0, minChunkX);
+            int maxChunkX = (int)((rightX()+margin) / divider);
+            maxChunkX = Math.min(terrainChunks.length - 1, maxChunkX);
+            int minChunkY = (int)((topY()-margin) / divider);
+            minChunkY = Math.max(0, minChunkY);
+            int maxChunkY = (int)((baseY()+margin) / divider);
+            maxChunkY = Math.min(terrainChunks[0].length - 1, maxChunkY);
+            x=prevX;
+            y=prevY;
+            HashSet<LegacyGameObject> testObjects=new HashSet<LegacyGameObject>();
+            for (int i = minChunkX; i <= maxChunkX; i++) {
+                for (int j = minChunkY; j <= maxChunkY; j++) {
+                    TerrainChunk chunk = world.GetTerrainChunk(i, j);
+                    if (chunk != null) {
+                        for(LegacyGameObject o:chunk.localObjects){
+                            testObjects.add(o);
+                        }
+
+                    }
+                }
+            }
+        		for(LegacyGameObject other :testObjects){
                     if (!ShouldRegisterTouch(other, true))
                         continue;
                     //!((ArrayList)touchableObjects).contains(other)
@@ -923,7 +954,7 @@ public class LegacyGameObject extends ViewableObject {
         // || !chunksChangedSinceLastStep
         if (len == prevChunkActiveCount)
         {
-            return;
+            //return;
         }
         //ArrayList<TerrainChunk> keys = new ArrayList<TerrainChunk>(chunksTouching.keySet());
         //Deactivate unused chunks;

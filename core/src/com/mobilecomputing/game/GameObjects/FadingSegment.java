@@ -38,7 +38,12 @@ public class FadingSegment extends LegacyGameObject{
         }
     }
 
-
+    @Override
+    public boolean ShouldRegisterTouch(LegacyGameObject o,boolean caller){
+    	return false;
+    }
+    
+    
     public float GetAirDragAppliedTo()
     {
         if (affectedByAirDrag && getWorld() != null)
