@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+  >
+
+    <fragment android:name="com.mobilecomputing.game.bluetooth.BluetoothFragment"
+        android:id="@+id/bluetooth_fragment"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" >
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lvBluetooth"
+            android:layout_alignParentTop="true"
+            >
+        </ListView>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan Bluetooth"
+            android:textSize="20dp"
+            android:id="@+id/btnBluetooth"
+            android:layout_alignParentBottom="true"
+            />
+</fragment>
+</RelativeLayout>
