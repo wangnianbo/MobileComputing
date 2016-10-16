@@ -2,6 +2,7 @@ package com.mobilecomputing.game;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.mobilecomputing.game.GameObjects.WormHead;
 import com.mobilecomputing.game.GameObjects.WormHead_Player;
+import com.mobilecomputing.game.network.Bluetooth.BluetoothConnection;
+import com.mobilecomputing.game.shareScores.ShareScores;
 
 public class slitherio extends ApplicationAdapter implements InputProcessor {
 	/*SpriteBatch batch;
@@ -42,6 +45,17 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	//Texture img;
 	public static int screenWidth;
 	public static int screenHeight;
+	public static BluetoothConnection bluetoothConnection;
+	public static ShareScores shareScores;
+	public static boolean isNetGame = false;
+	public static boolean jumpInMultiplayer=false;
+	public slitherio(){
+		this.bluetoothConnection = null;
+	}
+	public slitherio(BluetoothConnection bluetoothConnection, ShareScores shareScores){
+		this.bluetoothConnection = bluetoothConnection;
+		this.shareScores = shareScores;
+	}
 	@Override
 	public void create () {
 
@@ -72,7 +86,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 		}*/
 		getHandles(dirHandle,handles);
 
-		Controller.initializeGame();
+		Controller.initializeGame(bluetoothConnection, shareScores);
 		Gdx.input.setInputProcessor(this);
 		//RecurseDirectory("bin"+ File.separator +"images","bin"+File.separator);
 

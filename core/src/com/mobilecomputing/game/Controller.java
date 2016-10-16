@@ -1,5 +1,7 @@
 package com.mobilecomputing.game;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -12,6 +14,8 @@ import com.mobilecomputing.game.Drawables.SpriteImageData;
 import com.mobilecomputing.game.menus.DefaultGameHud;
 import com.mobilecomputing.game.menus.LaunchMenu;
 import com.mobilecomputing.game.menus.Menu;
+import com.mobilecomputing.game.network.Bluetooth.BluetoothConnection;
+import com.mobilecomputing.game.shareScores.ShareScores;
 
 public class Controller {
 	public static int offsetX = 0;
@@ -21,11 +25,30 @@ public class Controller {
 	public static int projectionHeight=480;
 	public static SpriteBatch batch;
 	public static World world;
+	public static World prevWorld;
+	public static World SetWorld(World newWorld){
+		if(world == null){
+			prevWorld=newWorld;
+		}else {
+			prevWorld=world;
+		}
+
+		world=newWorld;
+		return world;
+	}
+
+
 	public static Menu activeMenu;
 	public static OrthographicCamera activeCamera;
 	public static OrthographicCamera guiCam;
 	public static OrthographicCamera worldCam;
 	public static Random spawnRandom;
+	public static BluetoothConnection _bluetoothConnection = null;
+	public static ShareScores _shareScores = null;
+	public static boolean isServer = false;
+
+	public static InputStream inputStream;
+	public static OutputStream outputStream;
 
 	public enum RenderMode{GAME,GUI};
 	private static RenderMode getRenderMode(){
@@ -50,7 +73,9 @@ public class Controller {
 
 
 
-	public static void initializeGame() {
+	public static void initializeGame(BluetoothConnection bluetoothConnection, ShareScores shareScores) {
+		_bluetoothConnection = bluetoothConnection;
+		_shareScores = shareScores;
 		spawnRandom=new Random();
 		for (Character c = 'A'; c < 'Z'; c++) {
 			String testString = "" + c;
@@ -85,8 +110,13 @@ public class Controller {
 		SoundController.loadAllSounds();
 		GlobalAnimations.InitializeAnimations();
 		FontController.InitializeFonts();
-		swapGameMode(GameMode.SPLASH);
-
+		if(!slitherio.jumpInMultiplayer) {
+			swapGameMode(GameMode.SPLASH);
+		}
+		else{
+			swapGameMode(GameMode.SP_GAME);
+		}
+		slitherio.jumpInMultiplayer=false;
 	}
 
 
@@ -174,7 +204,7 @@ public class Controller {
 
 	}
 
-	public enum GameMode{SPLASH,SP_GAME,MP_GAME,MP_GAME_HOST};
+	public enum GameMode{SPLASH,SP_GAME,MP_GAME, share_scores, MP_GAME_HOST};
 	private static GameMode gameMode;
 	public GameMode getGameMode(){
 		return gameMode;
@@ -182,7 +212,10 @@ public class Controller {
 	public static void swapGameMode(GameMode newMode){
 		if(newMode!=gameMode){
 			if(newMode==GameMode.SPLASH){
-				activeMenu=new LaunchMenu(0,0);
+				activeMenu=new LaunchMenu(0,0, _bluetoothConnection);
+				if(world != null){
+					prevWorld = world;
+				}
 				world=null;
 
 			}
@@ -193,16 +226,38 @@ public class Controller {
 					case SP_GAME:
 						
 						activeMenu=new DefaultGameHud(0,0);
-						world=new World();
+						world= SetWorld( new World());
 					break;
 					case MP_GAME:
-						world=new World(true);
+						System.out.println(_bluetoothConnection != null);
+						_bluetoothConnection.gotoBluetoothSet();
+
+
+						//activeMenu=new DefaultGameHud(0,0);
+						//world=new World();
 
 
 
 					break;
+					case share_scores:
+						_shareScores.alreadyShared();
+						//world=new World();
+						int high_score = 0;
+						if(prevWorld != null){
+							high_score = prevWorld.activeCharacter.getScore();
+						}
+
+						_shareScores.shareSconresOnSocialMedia("I just played slither and got a longest length of "+high_score+"! Can you beat that?");
+
+
+						//activeMenu=new DefaultGameHud(0,0);
+						//world=new World();
+
+
+
+						break;
 					case MP_GAME_HOST:
-						world=new World(true);
+						world = SetWorld( new World());
 
 
 

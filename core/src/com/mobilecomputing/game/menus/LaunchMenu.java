@@ -6,20 +6,23 @@ import com.mobilecomputing.game.FontController;
 import com.mobilecomputing.game.SoundController;
 import com.mobilecomputing.game.UGameLogic;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
+import com.mobilecomputing.game.network.Bluetooth.BluetoothConnection;
 
 public class LaunchMenu extends Menu {
-	public LaunchMenu(float x,float y){
+	private BluetoothConnection bluetoothConnection;
+	public LaunchMenu(float x, float y, BluetoothConnection bluetoothConnection){
 		super(x,y);
 		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight/3,SpriteImageData.GetByName("ui/button_localGame"),"local"));
-		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*2/3,SpriteImageData.GetByName("ui/button_joinGame"),"join"));
+		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*2/4,SpriteImageData.GetByName("ui/button_BluetoothGame"),"Bluetooth Game"));
+		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*3/4,SpriteImageData.GetByName("ui/button_ShareScore"),"shareScore"));
 		//addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*3/4,SpriteImageData.GetByName("ui/button_hostGame"),"host"));
-
+		this.bluetoothConnection = bluetoothConnection;
 			SoundController.PlaySound("explosion");
-	}
+			}
 
 
 
-	@Override 
+	@Override
 	public void receiveMessage(MenuElement sender,String msg){
 		super.receiveMessage(sender, msg);
 		msg=msg.toLowerCase();
@@ -28,12 +31,20 @@ public class LaunchMenu extends Menu {
 				UGameLogic.LogMsg("Local");
 				Controller.swapGameMode(GameMode.SP_GAME);
 			break;
-			case "join":
-				Controller.swapGameMode(GameMode.SP_GAME);
-				UGameLogic.LogMsg("Join Game");
+			case "bluetooth game":
+				UGameLogic.LogMsg("Bluetooth Game");
+				Controller.swapGameMode(GameMode.MP_GAME);
+
 				//Controller.swapGameMode(GameMode.MP_GAME);
 				//UGameLogic.LogMsg("Join Game");
 			break;
+			case "sharescore":
+				UGameLogic.LogMsg("shareScore");
+				Controller.swapGameMode(GameMode.share_scores);
+
+				//Controller.swapGameMode(GameMode.MP_GAME);
+				//UGameLogic.LogMsg("Join Game");
+				break;
 			case "host":
 				Controller.swapGameMode(GameMode.MP_GAME_HOST);
 				UGameLogic.LogMsg("Host Game");

@@ -10,6 +10,8 @@ import com.mobilecomputing.game.UGameLogic;
 import com.mobilecomputing.game.menus.GameOverMenu;
 import com.mobilecomputing.game.slitherio;
 
+import static com.mobilecomputing.game.slitherio.*;
+
 /**
  * Created by Venom on 29/08/2016.
  */
@@ -41,6 +43,10 @@ public class WormHead extends LegacyGameObject{
         super.update();
 
         //lastDragX !=slitherio.lastWorldDragX || lastDragY !=slitherio.lastWorldDragY
+        double moveDirection = getTargetDir();
+        if(slitherio.bluetoothConnection.isNetGame()){
+
+        }
         moveDir= UGameLogic.TryRotateTowardsAlt(moveDir,getTargetDir(),7,0,360);
 
 
