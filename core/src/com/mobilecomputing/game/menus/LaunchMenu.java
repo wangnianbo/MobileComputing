@@ -14,7 +14,8 @@ public class LaunchMenu extends Menu {
 		super(x,y);
 		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight/3,SpriteImageData.GetByName("ui/button_localGame"),"local"));
 		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*2/4,SpriteImageData.GetByName("ui/button_BluetoothGame"),"Bluetooth Game"));
-		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*3/4,SpriteImageData.GetByName("ui/button_ShareScore"),"shareScore"));
+		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*2/3,SpriteImageData.GetByName("ui/button_ShareScore"),"shareScore"));
+		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*5/6,SpriteImageData.GetByName("ui/button_Settings"),"settings"));
 		//addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*3/4,SpriteImageData.GetByName("ui/button_hostGame"),"host"));
 		this.bluetoothConnection = bluetoothConnection;
 			SoundController.PlaySound("explosion");
