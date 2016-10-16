@@ -55,27 +55,8 @@ public class AndroidBluetoothConnection   implements BluetoothConnection {
     }
 
     @Override
-    public boolean isBluetoothAvailable() {
-        return false;
-    }
-
-    @Override
-    public void turnBluetoothOn() {
-
-    }
-
-    @Override
-    public List<String> getDeviceList(List<String> deviceList) {
-        return null;
-    }
-
-    @Override
     public void gotoBluetoothSet() {
         androidLauncher.gotoBluetoothSet();
     }
 
-    @Override
-    public boolean startDiscoverBluetooth() {
-        return false;
-    }
 }
