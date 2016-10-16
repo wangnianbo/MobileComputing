@@ -19,7 +19,9 @@ import java.util.List;
  * Created by Bill on 19/09/2016.
  */
 public class AndroidBluetoothConnection   implements BluetoothConnection {
-
+    /**
+     *
+     */
     AndroidLauncher androidLauncher;
     public AndroidBluetoothConnection(AndroidLauncher androidLauncher){
         this.androidLauncher = androidLauncher;
