@@ -76,6 +76,10 @@ public class BluetoothFragment extends Fragment {
         return view;
     }
 
+    /**
+     * On atech Event
+     * @param activity
+     */
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
