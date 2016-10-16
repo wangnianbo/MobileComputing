@@ -21,6 +21,10 @@ import com.mobilecomputing.game.UGameLogic;
 
 public class SpriteImageData extends BasicImageData {
 	private static HashMap<String,SpriteImageData> allImages=new HashMap<String,SpriteImageData>();
+	public static HashMap<String,SpriteImageData> getAllImages(){
+		return allImages;
+	}
+	
 	public static Color color=Color.WHITE;
 	
 	public String sourcePathString="";

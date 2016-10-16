@@ -77,7 +77,7 @@ public class WormHead_Player extends WormHead{
         else{
             targetDir = moveDir;
         }
-        if(slitherio.bluetoothConnection.isNetGame() == true){
+        if(slitherio.bluetoothConnection!=null && slitherio.bluetoothConnection.isNetGame() == true){
 
             StringBuffer sb = new StringBuffer();
             sb.append(targetDir);

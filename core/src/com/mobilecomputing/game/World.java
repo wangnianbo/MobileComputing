@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
+import com.mobilecomputing.game.Controller.GameMode;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
 import com.mobilecomputing.game.GameObjects.LegacyGameObject;
 import com.mobilecomputing.game.GameObjects.Pellet;
@@ -16,6 +17,7 @@ import com.mobilecomputing.game.GameObjects.WormTemplate_Player;
 import com.mobilecomputing.game.Terrain.HaxWall;
 import com.mobilecomputing.game.Terrain.TerrainChunk;
 import com.mobilecomputing.game.WormSkins.*;
+import com.mobilecomputing.game.menus.AdvertisementMenu;
 import com.mobilecomputing.game.menus.GameOverMenu;
 
 import helperDataStructures.Point2D;
@@ -347,8 +349,14 @@ public class World {
 				cameraZoomRatio = cameraZoomRatio - zoomDiff;
 			}
 		}
-		if(activeCharacter!=null && activeCharacter.destroyed){
-			Controller.activeMenu=new GameOverMenu(0,0);
+		if(activeCharacter!=null && activeCharacter.destroyed && !(Controller.activeMenu instanceof AdvertisementMenu)){
+			if(AdvertisementMenu.advertismentsOn){
+				Controller.activeMenu=new AdvertisementMenu(0,0);
+			}
+			else{
+				Controller.swapGameMode(GameMode.SPLASH);
+			}
+
 		}
 
 

@@ -44,7 +44,7 @@ public class WormHead extends LegacyGameObject{
 
         //lastDragX !=slitherio.lastWorldDragX || lastDragY !=slitherio.lastWorldDragY
         double moveDirection = getTargetDir();
-        if(slitherio.bluetoothConnection.isNetGame()){
+        if(slitherio.bluetoothConnection!=null && slitherio.bluetoothConnection.isNetGame()){
 
         }
         moveDir= UGameLogic.TryRotateTowardsAlt(moveDir,getTargetDir(),7,0,360);

@@ -138,11 +138,28 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	*/
 
     public static float framesForUpdateDoubled = 0;
+	public static int countUPS=0;
+	public static float lastUPS=0;
+	public static float lastTickUPS=0;
+	public static float tDiff=0;
 	@Override
 	public void render () {
-		float lastFrameDiff = Gdx.graphics.getDeltaTime()*1000/60f;
+
+		float deltaTime= Gdx.graphics.getDeltaTime();
+		tDiff +=(deltaTime*1000);
+		if (tDiff > 1000)
+		{
+			lastUPS = countUPS * 1000 / (tDiff);
+			//lastTickUPS = currentTick;
+			tDiff=0;
+			countUPS = 0;
+		}
+
+		//UGameLogic.LogMsg("time delta"+deltaTime);
+		float lastFrameDiff = deltaTime*60f;
+		//UGameLogic.LogMsg("last frame diff"+lastFrameDiff);
 		boolean allowDoublingOfFrames=true;
-		 double minExpectedSpeed = 1.0;
+		 double minExpectedSpeed = 1;
         if (allowDoublingOfFrames)
         {
             int maxFrameMultiplier = 2;
@@ -156,8 +173,8 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
                 framesForUpdateDoubled += (float)Math.max((lastFrameDiff - minExpectedSpeed) / minExpectedSpeed, -1*maxFrameMultiplier);
             }
             //Use to be 3 instead of 6
-            framesForUpdateDoubled = Math.max(framesForUpdateDoubled, -3);
-            framesForUpdateDoubled = Math.min(framesForUpdateDoubled, 7);
+            framesForUpdateDoubled = Math.max(framesForUpdateDoubled, -1);
+            framesForUpdateDoubled = Math.min(framesForUpdateDoubled, 4);
             //lastFramesForUpdatesDoubled = (int)framesForUpdateDoubled;
             for (int i = 0; i < maxFrameMultiplier*2-1; i++)
             {

@@ -8,6 +8,7 @@ import com.mobilecomputing.game.GameObjects.LegacyGameObject;
 import com.mobilecomputing.game.GameObjects.WormTemplate_Enemy;
 import com.mobilecomputing.game.FontController;
 import com.mobilecomputing.game.SoundController;
+import com.mobilecomputing.game.slitherio;
 
 public class DefaultGameHud extends Menu {
 	public DefaultGameHud(float x, float y){
@@ -51,7 +52,7 @@ public class DefaultGameHud extends Menu {
 				}
 			}
 			
-			FontController.DrawString("SCORE "+ score+"   RANK "+rank+"/"+wormCount+"     FPS:"+ Gdx.graphics.getFramesPerSecond(),Controller.projectionWidth/2-10, 10);
+			FontController.DrawString("SCORE "+ score+"   RANK "+rank+"/"+wormCount+"     FPS:"+ Gdx.graphics.getFramesPerSecond()+" UPS: "+(int)slitherio.lastUPS,Controller.projectionWidth/2-10, 10);
 		}
 		FontController.ResetProperties();
 	}
