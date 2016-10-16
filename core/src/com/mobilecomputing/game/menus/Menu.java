@@ -50,6 +50,7 @@ public class Menu extends MenuElement{
 
 	@Override
 	public void update(){
+		super.update();
 		if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
 			onBackPressed();
 		}

@@ -50,8 +50,8 @@ public class LaunchMenu extends Menu {
 				Controller.swapGameMode(GameMode.MP_GAME_HOST);
 				UGameLogic.LogMsg("Host Game");
 			break;
-			case "test":
-				UGameLogic.LogMsg("Testing");
+			case "settings":
+				Controller.activeMenu=new SkinsMenu(0,0); 
 			break;
 		}
 

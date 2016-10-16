@@ -11,6 +11,9 @@ import com.mobilecomputing.game.GameObjects.WormSegment;
 public class WormSkin_Chameleon2 extends WormSkin {
 
 	ArrayList<Color> colors=new ArrayList<Color>();
+	public void ClearColors(){
+		colors.clear();
+	}
 	public WormSkin_Chameleon2(){
 		
 	}

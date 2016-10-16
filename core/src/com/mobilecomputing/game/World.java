@@ -170,16 +170,16 @@ public class World {
 
 	public WormTemplate activeCharacter;
 	public boolean isMultiplayer=false;
-	public World(Boolean isMultiplayer){
-		construct(isMultiplayer);
+	public World(Boolean isMultiplayer,boolean emptyWorld){
+		construct(isMultiplayer,emptyWorld);
 	}
 
 	public World(){
-		construct(false);
+		construct(false,false);
 
 	}
 
-	public void construct(boolean isMultiplayer){
+	public void construct(boolean isMultiplayer,boolean emptyWorld){
 		//Initialize terrain chunks.
 
 		int widthInChunks=(int)Math.ceil(width/(float)TerrainChunk.chunkWidth);
@@ -190,10 +190,12 @@ public class World {
 				terrainChunks[i][j] =new TerrainChunk(this,i,j);
 			}
 		}
-		
+		if(emptyWorld)
+			return;
+		WormSkin.chameleonSkin2.ClearColors();
 		
 		this.activeCharacter=((WormTemplate_Player)addObject(new WormTemplate_Player(width/2,height*3/4-70,5)));
-		this.activeCharacter.skin=new WormSkin_Chameleon2();
+		this.activeCharacter.skin=WormSkin.chosenSkin();
 		ArrayList<WormSkin> skins=new ArrayList<WormSkin>();
 		skins.add(new WormSkin_BlackAndGold());
 		skins.add(new WormSkin_Pokey(true));

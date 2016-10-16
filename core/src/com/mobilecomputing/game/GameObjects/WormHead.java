@@ -37,7 +37,7 @@ public class WormHead extends LegacyGameObject{
 
     boolean boosting=false;
     public int timeBoosting=0;
-
+    public int rotationSpeed=7;
     @Override
     public void update(){
         super.update();
@@ -47,7 +47,7 @@ public class WormHead extends LegacyGameObject{
         if(slitherio.bluetoothConnection!=null && slitherio.bluetoothConnection.isNetGame()){
 
         }
-        moveDir= UGameLogic.TryRotateTowardsAlt(moveDir,getTargetDir(),7,0,360);
+        moveDir= UGameLogic.TryRotateTowardsAlt(moveDir,getTargetDir(),rotationSpeed,0,360);
 
 
         moveSpeed=baseMoveSpeed;
