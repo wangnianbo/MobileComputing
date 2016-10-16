@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Bluetooth Stream Class
  * Created by Bill on 8/10/2016.
  */
 public class BluetoothStream {

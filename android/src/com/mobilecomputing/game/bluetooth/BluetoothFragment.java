@@ -37,6 +37,14 @@ public class BluetoothFragment extends Fragment {
     ArrayAdapter adapter;
     BecomeServer becomeServer;
     Boolean isServer = false;
+
+    /**
+     * Haddle Create event
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,6 +76,10 @@ public class BluetoothFragment extends Fragment {
         return view;
     }
 
+    /**
+     * On atech Event
+     * @param activity
+     */
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -75,6 +87,10 @@ public class BluetoothFragment extends Fragment {
 
     }
 
+
+    /**
+     * Enable bluetooth on Mobile Phone
+     */
     public void startBluetooth(){
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!mBluetoothAdapter.isEnabled()) {
@@ -88,6 +104,9 @@ public class BluetoothFragment extends Fragment {
         getActivity().registerReceiver(mReceiver, filter);
     }
 
+    /**
+     * Destroy object!
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -99,6 +118,9 @@ public class BluetoothFragment extends Fragment {
 
     }
 
+    /**
+     * Broadcast message receiver
+     */
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -120,10 +142,18 @@ public class BluetoothFragment extends Fragment {
             }
         }
     };
+
+    /**
+     * Get Text
+     * @param data
+     */
     public void getText(String data){
         editText.setText(data);
     }
 
+    /**
+     * Server Interface
+     */
     public interface BecomeServer{
         public void becomeServer(BluetoothAdapter bluetoothAdapter);
         public void ConnectToDevice(BluetoothDevice device);

@@ -247,7 +247,7 @@ public class Controller {
 							high_score = prevWorld.activeCharacter.getScore();
 						}
 
-						_shareScores.shareSconresOnSocialMedia("I just played slither and got a longest length of "+high_score+"! Can you beat that?");
+						_shareScores.shareSconresOnSocialMedia("I just played slither and got a length of "+high_score+"! Can you beat that?");
 
 
 						//activeMenu=new DefaultGameHud(0,0);

@@ -14,10 +14,14 @@ import java.io.OutputStream;
 
 public class AndroidLauncher extends AndroidApplication {
 	AndroidBluetoothConnection androidBluetoothConnection;
-	InputStream inputStream;
-	OutputStream outputStream;
 	AndroidApplicationConfiguration config;
 	AndroidShareScores shareScores;
+
+	/**
+	 * Initialize the game!
+	 * @param savedInstanceState the Instance which is saved!
+	 *
+     */
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,6 +31,9 @@ public class AndroidLauncher extends AndroidApplication {
 		initialize(new slitherio(androidBluetoothConnection, shareScores), config);
 	}
 
+	/**
+	 * When the game Resume, Create the game object.
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -37,13 +44,19 @@ public class AndroidLauncher extends AndroidApplication {
 		initialize(new slitherio(androidBluetoothConnection, shareScores), config);
 	}
 
+	/**
+	 * Swap to Bluetooth connection activity
+	 */
 	public void gotoBluetoothSet(){
 		Intent intent = new Intent(AndroidLauncher.this, MainActivity.class);
 
 		startActivity(intent);
 	}
 
-
+	/**
+	 * Switch to Share Scores Activity
+	 * @param message The message which wants to share.
+     */
 	public void shareScores(String message){
 		Intent share = new Intent(Intent.ACTION_SEND);
 		share.setType("text/plain");
@@ -51,11 +64,5 @@ public class AndroidLauncher extends AndroidApplication {
 
 		startActivity(Intent.createChooser(share, "Title of the dialog the system will open"));
 	}
-	public InputStream getInputStream() {
-		return inputStream;
-	}
 
-	public OutputStream getOutputStream() {
-		return outputStream;
-	}
 }

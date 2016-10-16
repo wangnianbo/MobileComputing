@@ -76,12 +76,20 @@ public class MainActivity extends AppCompatActivity implements BluetoothFragment
         bf = (BluetoothFragment) adapter.getItem(0);
     }
 
+    /**
+     * Starte Server thread
+     * @param bluetoothAdapter
+     */
     @Override
     public void becomeServer(BluetoothAdapter bluetoothAdapter) {
         serverThread = new ServerThread();
         serverThread.start();
     }
 
+    /**
+     * Start Client Thread
+     * @param device
+     */
     @Override
     public void ConnectToDevice(BluetoothDevice device) {
         clientThread = new ClientThread(device);
@@ -94,6 +102,10 @@ public class MainActivity extends AppCompatActivity implements BluetoothFragment
         super.onDestroy();
     }
 
+    /**
+     * Send message!
+     * @param data
+     */
     @Override
     public void sendData(String data) {
         StringBuffer sb = new StringBuffer();
@@ -123,6 +135,9 @@ public class MainActivity extends AppCompatActivity implements BluetoothFragment
         }
     }
 
+    /**
+     * Client Thread class
+     */
     private class ClientThread extends Thread{
         private final BluetoothSocket mySocket;
 
@@ -175,6 +190,9 @@ public class MainActivity extends AppCompatActivity implements BluetoothFragment
         }
     }
 
+    /**
+     * Server Thread class
+     */
     private class ServerThread extends Thread{
         private final BluetoothServerSocket serverSocket;
 
@@ -237,6 +255,9 @@ public class MainActivity extends AppCompatActivity implements BluetoothFragment
 
     }
 
+    /**
+     * My page Adapter class
+     */
     class MyPageAdapter extends FragmentStatePagerAdapter{
         private BluetoothFragment bluetoothFragment;
         private ChatFragment chatFragment;

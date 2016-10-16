@@ -21,6 +21,14 @@ public class ChatFragment extends Fragment {
     Button button;
     String message = "";
     Communication communication;
+
+    /**
+     * Handle on crate event
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,10 +54,19 @@ public class ChatFragment extends Fragment {
         communication = (Communication) activity;
 
     }
+
+    /**
+     * add Text
+     * @param text
+     */
     public void addText(String text){
         message+="other: "+text+"\n";
         etBox.setText(message);
     }
+
+    /**
+     * Communication Interface
+     */
     public interface Communication{
         public void sendData(String data);
     }

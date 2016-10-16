@@ -16,64 +16,70 @@ import java.util.List;
 
 
 /**
+ * Android Implementation of Bluetooth Connection
  * Created by Bill on 19/09/2016.
  */
 public class AndroidBluetoothConnection   implements BluetoothConnection {
-
+    /**
+     *
+     */
     AndroidLauncher androidLauncher;
     public AndroidBluetoothConnection(AndroidLauncher androidLauncher){
         this.androidLauncher = androidLauncher;
     }
 
 
-
+    /**
+     * Get Client Input Stream
+     * @return
+     */
     @Override
     public InputStream getClientInputStream() {
         return BluetoothStream.ClientInStream;
     }
 
+    /**
+     * Get Client Output Stream
+     * @return
+     */
     @Override
     public OutputStream getClientOutputStream() {
         return BluetoothStream.ClientOutStream;
     }
 
+    /**
+     * Get Server Input Stream
+     * @return
+     */
     @Override
     public InputStream getServerInputStream() {
         return BluetoothStream.ServerInStream;
     }
 
+    /**
+     * Get Server Output Stream
+     * @return
+     */
     @Override
     public OutputStream getServerOutputStream() {
         return BluetoothStream.ServerOutStream;
     }
 
+    /**
+     * is it a net game
+     * @return
+     */
     @Override
     public boolean isNetGame() {
         return BluetoothStream.isNetGame;
     }
 
-    @Override
-    public boolean isBluetoothAvailable() {
-        return false;
-    }
-
-    @Override
-    public void turnBluetoothOn() {
-
-    }
-
-    @Override
-    public List<String> getDeviceList(List<String> deviceList) {
-        return null;
-    }
-
+    /**
+     * Switch to Bluetooth connection
+     */
     @Override
     public void gotoBluetoothSet() {
         androidLauncher.gotoBluetoothSet();
     }
 
-    @Override
-    public boolean startDiscoverBluetooth() {
-        return false;
-    }
 }
