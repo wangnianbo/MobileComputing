@@ -122,6 +122,7 @@ public class Controller {
 
 	//public static float camRotation=0;
 	public static void update() {
+		slitherio.countUPS ++;
 		if(step%20==0){
 			//UGameLogic.LogMsg("Camera zoom "+guiCam.zoom);
 		}
