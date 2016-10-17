@@ -15,7 +15,7 @@ public class Menu extends MenuElement{
 	public Menu(float x,float y){
 		super(x,y);
 	}
-	
+	//Add a button to the menu;
 	public MenuElement addElement(MenuElement element){
 		elements.add(element);
 		element.parentMenu=this;
@@ -45,7 +45,7 @@ public class Menu extends MenuElement{
 	public Menu prevGameMenu=null;
 
 
-
+	//On pressing back button;
 	public void onBackPressed(){
 		if(prevGameMenu!=null){
 			Controller.activeMenu=prevGameMenu;
@@ -55,6 +55,7 @@ public class Menu extends MenuElement{
 	
 	public ImageButton backButton=null;
 	public void addBackButton(){
+		//Add a back button;
 		if(backButton==null){
 			SpriteImageData backImage=SpriteImageData.GetByName("ui/backButton");
 		
@@ -67,13 +68,14 @@ public class Menu extends MenuElement{
 		}
 	}
 
-
+	//Things to do at each step;
 	@Override
 	public void update(){
 		super.update();
 		if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
 			onBackPressed();
 		}
+		//Update sub elements;
 		for(MenuElement element : elements){
 			element.update();
 		}
@@ -88,7 +90,8 @@ public class Menu extends MenuElement{
 			element.render();
 		}
 	}
-	
+
+	//React to a message from a menu element;
 	public void receiveMessage(MenuElement element,String message){
 		if(message!=null && message.toLowerCase().equals("back")){
 			onBackPressed();

@@ -2,11 +2,15 @@ package com.mobilecomputing.game;
 
 public class ViewableObject {
     //public SimpleCollider simpleCollider;
+
+    //Should the object be removed from the world (Call instanceDestroy();
     public boolean destroyed = false;
+    //Position in world;
     public float x=0;
     public float y=0;
     public float prevX=0;
     public float prevY=0;
+    //Steps alive;
     public int step;
     
     public ViewableObject(float x, float y) {

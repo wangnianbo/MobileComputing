@@ -11,8 +11,11 @@ import com.mobilecomputing.game.UGameLogic;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
 
 public class AdvertisementMenu extends Menu {
-ImageButton closeButton;
-ArrayList<SpriteImageData> addImages=new ArrayList<SpriteImageData>();
+	//button to close;
+	ImageButton closeButton;
+	//All images to display start with "staticAds";
+	ArrayList<SpriteImageData> addImages=new ArrayList<SpriteImageData>();
+
 	public AdvertisementMenu(float x,float y){
 		super(x,y);
 		SpriteImageData closeImage=SpriteImageData.GetByName("ui/button_close");
@@ -20,25 +23,16 @@ ArrayList<SpriteImageData> addImages=new ArrayList<SpriteImageData>();
 		closeButton.setScale(32/((float)closeImage.getWidth()),32/(float)closeImage.getWidth());
 		closeButton.setCentered(false);
 		addElement(closeButton);
-		
-		//addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight/3,SpriteImageData.GetByName("ui/button_localGame"),"local"));
-		//addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*2/3,SpriteImageData.GetByName("ui/button_joinGame"),"join"));
-		//addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*3/4,SpriteImageData.GetByName("ui/button_hostGame"),"host"));
 
-			//SoundController.PlaySound("explosion");
 		HashMap<String,SpriteImageData> allImagesMap=SpriteImageData.getAllImages();
-
+		//All images to display start are in the directory "staticAds";
 		for(String key:allImagesMap.keySet()){
 			if(key.startsWith("staticads")){
 				SpriteImageData imageToAdd=SpriteImageData.GetByName(key);
 				if(imageToAdd!=null)
 				addImages.add(imageToAdd);
-				else
-					UGameLogic.LogMsg("what");
-				
 			}
 		}
-		
 	}
 
 
@@ -47,24 +41,13 @@ ArrayList<SpriteImageData> addImages=new ArrayList<SpriteImageData>();
 	public void receiveMessage(MenuElement sender,String msg){
 		super.receiveMessage(sender, msg);
 		msg=msg.toLowerCase();
+		//Swap to splash screen on close;
 		switch(msg){
 			case "close":
 				UGameLogic.LogMsg("Local");
 				Controller.swapGameMode(GameMode.SPLASH);
 			break;
-			case "join":
-				Controller.swapGameMode(GameMode.SP_GAME);
-				UGameLogic.LogMsg("Join Game");
-				//Controller.swapGameMode(GameMode.MP_GAME);
-				//UGameLogic.LogMsg("Join Game");
-			break;
-			case "host":
-				Controller.swapGameMode(GameMode.MP_GAME_HOST);
-				UGameLogic.LogMsg("Host Game");
-			break;
-			case "test":
-				UGameLogic.LogMsg("Testing");
-			break;
+
 		}
 
 	}
@@ -103,7 +86,9 @@ ArrayList<SpriteImageData> addImages=new ArrayList<SpriteImageData>();
 
 		FontController.fontSize=20;
 		FontController.DrawString("A Word From Our Sponsors...",Controller.projectionHeight/2,3);
+
 		SpriteImageData.ResetProperties();
+		//After a set delay, swap advertisement;
 		delayBeforeSwitch--;
 		if(delayBeforeSwitch<0){
 			delayBeforeSwitch=maxDelayBeforeSwitch;
@@ -114,7 +99,7 @@ ArrayList<SpriteImageData> addImages=new ArrayList<SpriteImageData>();
 			}
 
 		}
-		
+		//Scale the advertisement to fit the window below the close button;
 		SpriteImageData advertisement=addImages.get(advertisementOffset);
 		float sx=Controller.projectionWidth/(float)advertisement.getWidth();
 		float sy=Controller.projectionHeight/(float)advertisement.getHeight();

@@ -11,23 +11,28 @@ import com.mobilecomputing.game.network.Bluetooth.BluetoothConnection;
 
 public class LaunchMenu extends Menu {
 	private BluetoothConnection bluetoothConnection;
+	//Special Message to display at bottom of screen;
 	public static int countdownForLastMessage=UGameLogic.lengthOfSecond;
 	private static String lastSpecialMessage="";
 	public static void setLastMessage(String newMessage){
 		lastSpecialMessage=newMessage;
 		countdownForLastMessage=UGameLogic.lengthOfSecond*3;
 	}
+
 	ImageButton settingsButton;
 	public LaunchMenu(float x, float y, BluetoothConnection bluetoothConnection){
 		super(x,y);
+		//Single Player Button;
 		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight/3,SpriteImageData.GetByName("ui/button_localGame"),"local"));
+		//Blue Tooth Game Button;
 		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*5/9,SpriteImageData.GetByName("ui/button_BluetoothGame"),"Bluetooth Game"));
+		//Share Scores Button;
 		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*7/9,SpriteImageData.GetByName("ui/button_ShareScore"),"shareScore"));
 		//addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*5/6,SpriteImageData.GetByName("ui/button_Settings"),"settings"));
-		SpriteImageData settingsImage=SpriteImageData.GetByName("ui/settingsGear");
 		//Create settings button;
-		settingsButton=new ImageButton(slitherio.RightGuiScreenX() -32,Controller.projectionHeight-32,settingsImage,"settings");
-		settingsButton.setScale(32/((float)settingsImage.getWidth()),32/(float)settingsImage.getWidth());
+		SpriteImageData settingsImage=SpriteImageData.GetByName("ui/settingsGear");
+		settingsButton=new ImageButton(slitherio.RightGuiScreenX() -48,Controller.projectionHeight-48,settingsImage,"settings");
+		settingsButton.setScale(48/((float)settingsImage.getWidth()),48/(float)settingsImage.getWidth());
 		settingsButton.setCentered(false);
 		addElement(settingsButton);
 		
@@ -42,7 +47,7 @@ public class LaunchMenu extends Menu {
 			}
 
 
-
+	//React to menu messages;
 	@Override
 	public void receiveMessage(MenuElement sender,String msg){
 		super.receiveMessage(sender, msg);
@@ -81,7 +86,9 @@ public class LaunchMenu extends Menu {
 	
 	public void update(){
 		super.update();
-		settingsButton.x=slitherio.RightGuiScreenX() -32;
+		//Position settings button;
+		settingsButton.x=slitherio.RightGuiScreenX() -48;
+		//Decrement special message display;
 		countdownForLastMessage--;
 		/*
 		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
@@ -106,14 +113,16 @@ public class LaunchMenu extends Menu {
 
 	@Override
 	public void render(){
-		SpriteImageData.ResetProperties();
-		SpriteImageData.Draw("title",Controller.projectionWidth/2,Controller.projectionHeight/8);
-		FontController.centeredX=true;
 
+		SpriteImageData.ResetProperties();
+		//Draw title;
+		SpriteImageData.Draw("title",Controller.projectionWidth/2,Controller.projectionHeight/8);
+		//Draw Scores;
+		FontController.centeredX=true;
 		FontController.DrawString("Last Score "+Controller.lastScore+"   Best Score: "+Controller.hiScore, Controller.projectionWidth/2,100);
+		//Draw Special Messages
 		if(countdownForLastMessage>0){
 			FontController.centeredX=true;
-
 			FontController.DrawString(lastSpecialMessage, Controller.projectionWidth/2,Controller.projectionHeight-FontController.fontSize);
 		}
 		super.render();

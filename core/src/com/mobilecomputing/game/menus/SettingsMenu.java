@@ -15,11 +15,9 @@ public class SettingsMenu extends Menu {
 		adsButton=new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*2/3,getAdsButtonImage(),"adsToggle");
 		addElement(adsButton);
 		addBackButton();
-		
-	
-		// TODO Auto-generated constructor stub
 	}
-	
+
+
 	public SpriteImageData getAdsButtonImage(){
 		if(AdvertisementMenu.advertismentsOn){
 			return SpriteImageData.GetByName("ui/button_ads_state_on");
@@ -41,6 +39,7 @@ public class SettingsMenu extends Menu {
 		super.receiveMessage(sender, msg);
 		msg=msg.toLowerCase();
 		switch(msg){
+
 		case "adstoggle":
 			AdvertisementMenu.advertismentsOn=!AdvertisementMenu.advertismentsOn;
 			adsButton.image=getAdsButtonImage();

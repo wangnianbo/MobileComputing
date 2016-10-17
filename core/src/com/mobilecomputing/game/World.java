@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Rectangle;
 import com.mobilecomputing.game.Controller.GameMode;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
 import com.mobilecomputing.game.GameObjects.LegacyGameObject;
 import com.mobilecomputing.game.GameObjects.Pellet;
 import com.mobilecomputing.game.GameObjects.Tanks.Tank;
-import com.mobilecomputing.game.GameObjects.WormHead;
 import com.mobilecomputing.game.GameObjects.WormTemplate;
 import com.mobilecomputing.game.GameObjects.WormTemplate_Enemy;
 import com.mobilecomputing.game.GameObjects.WormTemplate_Player;
@@ -18,7 +16,6 @@ import com.mobilecomputing.game.Terrain.HaxWall;
 import com.mobilecomputing.game.Terrain.TerrainChunk;
 import com.mobilecomputing.game.WormSkins.*;
 import com.mobilecomputing.game.menus.AdvertisementMenu;
-import com.mobilecomputing.game.menus.GameOverMenu;
 
 import helperDataStructures.Point2D;
 
@@ -335,24 +332,11 @@ public class World {
 		updateGameObjects(activeLocalObjects);
 		objectsCreatedThisTurn.clear();
 		//Spawn pallets
-		handlePelletSpawning();
-		//Handle camera zooming based on the length of the current snake;
-		float zoomDiff=Math.abs(getIntendedCameraZoomRatio()-cameraZoomRatio);
+		handleSpawning();
 
-		float minZoomDelta=0.1f;
-		float zoomDelta=Math.max(zoomDiff/10,minZoomDelta);
-		if (zoomDiff < minZoomDelta) {
+		handleCameraZooming();
 
-			cameraZoomRatio=getIntendedCameraZoomRatio();
-		}
-		else{
-			if(cameraZoomRatio<getIntendedCameraZoomRatio()) {
-				cameraZoomRatio = cameraZoomRatio + zoomDiff;
-			}
-			else{
-				cameraZoomRatio = cameraZoomRatio - zoomDiff;
-			}
-		}
+		//Check for Game Over State
 		if(activeCharacter!=null && activeCharacter.destroyed){
 			if( !(Controller.activeMenu instanceof AdvertisementMenu)){
 				gameOverTimer--;
@@ -373,7 +357,8 @@ public class World {
 
 	}
 
-	public void handlePelletSpawning(){
+	//Spawn pellets in random locations in the World;
+	public void handleSpawning(){
 		int pelletCount=0;
 		for(LegacyGameObject o:getActiveLocalObjects()){
 			if(o instanceof Pellet){
@@ -399,6 +384,7 @@ public class World {
 
 	}
 
+	//Spawn a pellet at a random location in the world;
 	public void spawnPellet(){
 		Pellet newPellet=new Pellet(0,0);
 		newPellet.SetWorld(this);
@@ -429,10 +415,12 @@ public class World {
 
 	}
 
-	
+	//Spawn an enemy at a random location
 	public void spawnEnemy(){
 		Random r=Controller.spawnRandom;
+		//Give the enemy a random length and skin;
 		int wormSize=Controller.spawnRandom.nextInt(27+1)+3;
+
 		ArrayList<WormSkin> skins=new ArrayList<WormSkin>();
 		skins.add(new WormSkin_Chameleon());
 		skins.add(new WormSkin_BlackAndGold());
@@ -466,7 +454,7 @@ public class World {
 		
 		
 		
-		
+		/*
 		Pellet newPellet=new Pellet(0,0);
 		newPellet.SetWorld(this);
 		int u=64;
@@ -493,7 +481,7 @@ public class World {
 			
 			addObject(newPellet);
 		}
-
+		*/
 	}
 	
 
@@ -508,11 +496,14 @@ public class World {
 		return null;
 	}
 
+	//On rendering the world...
 	public void Render(){
 
 		FontController.ResetProperties();
+		//Draw the local objects;
 		renderGameObjects(activeLocalObjects);
 		SpriteImageData.rotation=0;
+		//Draw the walls;
 		SpriteImageData.scaleX=width;
 		SpriteImageData.scaleY=2;
 		SpriteImageData.Draw("lonePixel",0,0,false);
@@ -535,25 +526,7 @@ public class World {
 	//Handle  hit detection between all objects;
 	public void manageHitDetectionUpdate()
 	{
-/*
-		ArrayList<LegacyGameObject> collisionList = new ArrayList<LegacyGameObject>();
-		for(LegacyGameObject o : activeLocalObjects){
-			collisionList.add(o);
-		}
-
-		for (int i = 0; i < collisionList.size(); i++)
-		{
-			LegacyGameObject o = collisionList.get(i);
-			collisionList.remove(i);
-			i = i - 1;
-			if (o.active && isRemoved(o) == false)
-			{
-				o.ReactToObjectCollisions(o.getObjectsTouchingAtPosition(o.x, o.y, true, false, false, collisionList));
-
-			}
-		}
-		collisionList.clear();
-*/
+		//Since the whole world is active at once, we check all the chunks for objects that collide (LegacyGameObject uses a hashset to avoid duplicate collisions).
         ArrayList<LegacyGameObject> collisionList = new ArrayList<LegacyGameObject>();
 
 
@@ -575,7 +548,7 @@ public class World {
 
                 for (int i = 0; i < collisionList.size(); i++)
                 {
-
+					//Make sure you remove objects from the temporary list as you go to further remove redundant checks.
                     LegacyGameObject o = collisionList.get(i);
                     collisionList.remove(i);
                     i = i - 1;
@@ -590,32 +563,16 @@ public class World {
 
             collisionList.clear();
         }
-        for (TerrainChunk[] chunkRow:terrainChunks)
-        {
-        	for(TerrainChunk chunk:chunkRow){
-                for (LegacyGameObject o : chunk.GetRegularObjectsIn())
-                {
-                	if(o==null || o.destroyed ){
-                		UGameLogic.LogMsg("test");
-                	}
-                }
-                
-             }
-        }
-        if(activeChunkCount>0 && Controller.step%10==0){
-           // UGameLogic.LogMsg("-------");
-           // UGameLogic.LogMsg("Active chunks "+activeChunkCount);
-        }
+
 
 	}
 
 
 
 
-
+	//Update all objects within the world
 	public void updateGameObjects(ArrayList<LegacyGameObject> hashSet)
 	{
-		//List<LegacyGameObject> collisionList=new List<LegacyGameObject>();
 		LegacyGameObject[] list = hashSet.toArray(new LegacyGameObject[hashSet.size()]);
 		for (LegacyGameObject o : list)
 		{
@@ -642,6 +599,7 @@ public class World {
 		}
 	}
 
+	//Render all objects within the world
 	public void renderGameObjects(ArrayList<LegacyGameObject> hashSet)
 	{
 
@@ -666,6 +624,40 @@ public class World {
 		}
 	}
 
+
+	//Camera ratio smooths to IntendedCameraZoomRatio in update() function
+	public float cameraZoomRatio=1;
+
+	//Camera zoom dependant on size of  player worm;
+	public float getIntendedCameraZoomRatio(){
+		if(activeCharacter!=null){
+			return activeCharacter.getCameraZoomRatio();
+
+		}
+		return 1;
+	}
+
+	public void handleCameraZooming(){
+		//Handle camera zooming based on the length of the current snake;
+		float zoomDiff=Math.abs(getIntendedCameraZoomRatio()-cameraZoomRatio);
+
+		float minZoomDelta=0.1f;
+		float zoomDelta=Math.max(zoomDiff/10,minZoomDelta);
+		if (zoomDiff < minZoomDelta) {
+
+			cameraZoomRatio=getIntendedCameraZoomRatio();
+		}
+		else{
+			if(cameraZoomRatio<getIntendedCameraZoomRatio()) {
+				cameraZoomRatio = cameraZoomRatio + zoomDiff;
+			}
+			else{
+				cameraZoomRatio = cameraZoomRatio - zoomDiff;
+			}
+		}
+	}
+
+
 	//TEAM AND TBS RELATED STUFF
 	private boolean gameEnded;
 	public boolean hasGameEnded(){
@@ -676,17 +668,5 @@ public class World {
 		gameEnded=true;
 
 	}
-
-	public float getIntendedCameraZoomRatio(){
-		if(activeCharacter!=null){
-			return activeCharacter.getCameraZoomRatio();
-
-		}
-		return 1;
-	}
-
-
-	public float cameraZoomRatio=1;
-
 	
 }

@@ -16,12 +16,13 @@ import com.mobilecomputing.game.GameObjects.WormTemplate_SkinDemo;
 import com.mobilecomputing.game.WormSkins.*;
 
 public class SkinsMenu extends Menu{
+
 	public ImageButton cycleLeft;
 	public ImageButton cycleRight;
 
-	public ImageButton backButton;
+
+	//Snake to draw within dummy world;
 	public WormTemplate worm;
-	public WormSkin skin;
 	private World world;
 
 	public SkinsMenu(float x,float y,Menu prevMenu){
@@ -29,31 +30,28 @@ public class SkinsMenu extends Menu{
 
 		prevGameMenu=prevMenu;
 		addBackButton();
+		//Create Dummy World;
 		world=new World(false,true);
 		world.width=2560;
 		world.height=2560;
-		
+		//Create Cycle buttons;
 		SpriteImageData arrow=SpriteImageData.GetByName("ui/arrowUp");
 		cycleLeft=new ImageButton(arrow.getWidth()/2,Controller.projectionHeight/2,arrow,"left");
-
 		cycleLeft.rotation=90;
 		cycleRight=new ImageButton(Controller.projectionWidth-arrow.getWidth()/2,Controller.projectionHeight/2,arrow,"right");
 		cycleRight.rotation=270;
-		//backButton=new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight-32,SpriteImageData.GetByName("ui/button_close"),"back");
 		addElement(cycleLeft);
 		addElement(cycleRight);
-		//addElement(backButton);
+		//Create Snake and dummy world;
 		worm=new WormTemplate_SkinDemo(Controller.projectionWidth/2,50,40);
 		world.addObject(worm);
+		worm.skin =WormSkin.chosenSkin();
+		//Confirm Button
 		SpriteImageData confirmImage=SpriteImageData.GetByName("ui/button_confirm");
 		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight-confirmImage.getHeight()/2,confirmImage,"confirm"));
-
-	
-		worm.skin =WormSkin.chosenSkin();
-		
 	};
 	
-
+	//React to messages from buttons
 	public void receiveMessage(MenuElement sender,String msg){
 		super.receiveMessage(sender, msg);
 		msg=msg.toLowerCase();
@@ -64,9 +62,7 @@ public class SkinsMenu extends Menu{
 			case "right":
 				WormSkin.IncrementSkinOffset();
 			break;
-
 			case "confirm":
-
 				onBackPressed();
 			break;
 		}
@@ -75,9 +71,11 @@ public class SkinsMenu extends Menu{
 	
 	public void update(){
 		super.update();
+		//Let the worm move;
 		worm.update();
 
 		worm.head.update();
+		//but move the head back to it's anchor position (as well as making the segments follow suit
 		float xDiff=worm.head.x-worm.head.prevX;
 		float yDiff=worm.head.y-worm.head.prevY;
 		for(WormSegment seg:worm.getTailSegments()){
@@ -87,7 +85,7 @@ public class SkinsMenu extends Menu{
 		
 		worm.head.x-=xDiff;
 		worm.head.y-=yDiff;
-
+		//To demonstrate chameleon skins, simulate the worm eating food pellets.
 		if(step%(UGameLogic.lengthOfSecond)==3){
 		if(worm.skin.equals(WormSkin.chameleonSkin1)){
 			WormSkin.chameleonSkin1.onConsumePellet(new Pellet(0,0));

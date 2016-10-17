@@ -18,18 +18,24 @@ import com.mobilecomputing.game.network.Bluetooth.BluetoothConnection;
 import com.mobilecomputing.game.shareScores.ShareScores;
 
 public class Controller {
+	public static int lastScore= 0;
+	public static int hiScore=0;
+	//The game uses cameras to scale a given area to match a phone or desktop monitor's resolution.
 	public static int offsetX = 0;
 	public static int screenWidth;
 	public static int screenHeight;
 	public static int projectionWidth=640;
 	public static int projectionHeight=480;
+	public static OrthographicCamera activeCamera;
+	public static OrthographicCamera guiCam;
+	public static OrthographicCamera worldCam;
+	//Image batching;
 	public static SpriteBatch batch;
 	public static World world;
 	public static World prevWorld;
-	public static int lastScore= 0;
-	public static int hiScore=0;
 
-	
+
+	//Change the world (literally)...being tracked rendered and updated.
 	public static World SetWorld(World newWorld){
 		if(world == null){
 			prevWorld=newWorld;
@@ -41,19 +47,18 @@ public class Controller {
 		return world;
 	}
 
-
+	//Active Menu being presented to the player;
 	public static Menu activeMenu;
-	public static OrthographicCamera activeCamera;
-	public static OrthographicCamera guiCam;
-	public static OrthographicCamera worldCam;
+	//For variability in creating objects.
 	public static Random spawnRandom;
+	//Online Stuff
 	public static BluetoothConnection _bluetoothConnection = null;
 	public static ShareScores _shareScores = null;
 	public static boolean isServer = false;
 
 	public static InputStream inputStream;
 	public static OutputStream outputStream;
-
+	//There are two render modes in game corresponding to
 	public enum RenderMode{GAME,GUI};
 	private static RenderMode getRenderMode(){
 		if(activeCamera==worldCam){
@@ -186,10 +191,10 @@ public class Controller {
 	public static int step = 0;
 
 	public static void render() {
-
+		//Update camera projections;
 		guiCam.update();
 		worldCam.update();
-
+		//Render the game world;
 		setRenderMode(RenderMode.GAME);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -198,6 +203,7 @@ public class Controller {
 		if(world!=null){
 			world.Render();
 		}
+		//Render the menu according to GUI camera;
 		setRenderMode(RenderMode.GUI);
 
 		if(activeMenu!=null){
@@ -209,6 +215,7 @@ public class Controller {
 
 	}
 
+	//We keep track of game modes in order to make swapping between worlds and menus easier;
 	public enum GameMode{SPLASH,SP_GAME,MP_GAME, share_scores, MP_GAME_HOST};
 	private static GameMode gameMode;
 	public GameMode getGameMode(){
@@ -228,6 +235,7 @@ public class Controller {
 
 				activeMenu=null;
 				switch(newMode){
+
 					case SP_GAME:
 						
 						activeMenu=new DefaultGameHud(0,0);

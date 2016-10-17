@@ -41,17 +41,19 @@ public class DefaultGameHud extends Menu {
 	@Override
 	public void render(){
 		super.render();
-
+		//Radar has a draw width of 75 units and a range of 750 units.
 		drawRadar(75,750);
+
 		SpriteImageData.ResetProperties();
 		FontController.ResetProperties();
 		
-
+		//Determine the ranking of players;
 		if(Controller.world!=null && Controller.world.activeCharacter!=null){
 			int rank=1;
 			int wormCount=1;
 			int score=Controller.world.activeCharacter.getScore();
 			ArrayList<WormTemplate> ranking=new ArrayList<WormTemplate>();
+
 			for(LegacyGameObject o: Controller.world.getActiveLocalObjects()){
 				if(o instanceof WormTemplate){
 					ranking.add((WormTemplate)o);
@@ -78,13 +80,16 @@ public class DefaultGameHud extends Menu {
 			for(WormTemplate template : ranking){
 				String name=template.name;
 				FontController.ResetProperties();
+				//Highlight player rank;
 				if(template==Controller.world.activeCharacter){
 					rank=proposedRank;
+
 					FontController.color=new Color(0,1,1,1);
 					name="You";
 				}
 
 				score=template.getScore();
+				//Draw top 10 players and their scores;
 				if(proposedRank<=10){
 
 					
@@ -103,7 +108,9 @@ public class DefaultGameHud extends Menu {
 	}
 
 	public void drawRadar(int radarSize,int radarRange){
+
 		SpriteImageData.ResetProperties();
+		//Draw radar background to have width of radar size;
 		SpriteImageData radarImage=SpriteImageData.GetByName("ui/radar");
 		float s=Math.min(radarSize/((float)radarImage.getWidth()),radarSize/((float)radarImage.getHeight()));
 		SpriteImageData.scaleX=s;
@@ -112,6 +119,7 @@ public class DefaultGameHud extends Menu {
 		float radarX=slitherio.RightGuiScreenX()- s*radarImage.getWidth()/2;
 		float radarY= s*radarImage.getHeight()/2;
 		radarImage.Draw(radarX,radarY,true);
+		//Draw surrounding enemies...
 		float radarRadius=radarImage.getWidth()*0.485f*s;
 		if(Controller.world!=null && Controller.world.activeCharacter!=null){
 			WormTemplate player=Controller.world.activeCharacter;
@@ -124,6 +132,7 @@ public class DefaultGameHud extends Menu {
 						SpriteImageData.color=new Color(1,0,0,1);
 						SpriteImageData.scaleX=0.2f;
 						SpriteImageData.scaleY=0.2f;
+						//As red dots relative to the player;
 						SpriteImageData.Draw("explosionFlare",radarX+diffX,radarY+diffY);
 					}
 				}

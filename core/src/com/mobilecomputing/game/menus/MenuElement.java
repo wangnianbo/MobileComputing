@@ -8,8 +8,18 @@ import com.mobilecomputing.game.OldHitDetection.SimpleCollider;
 
 public class MenuElement extends ViewableObject {
 	public String _identifier="element_";
+
+
+	//Collider is used to determine if finger is over the menu element;
 	public Shape2D shapeCollider;
-	public SimpleCollider simpleCollider;
+	//Finger collider is quite large to accomodate margin of errors with tapping screen;
+	public static Shape2D fingerCollider=new Rectangle(-32,-32,64,64);
+
+	//public SimpleCollider simpleCollider;
+
+	//Menu it's a part of
+	public Menu parentMenu=null;
+	//Each MenuElement has an identifier or message to send to the containing menu when reacting to the user;
     public String getIdentifier() {
 
             if (_identifier == null)
@@ -19,20 +29,14 @@ public class MenuElement extends ViewableObject {
             return returnValue;
     }
 
-    public void setIdentifier(String newIdentifier){
-        if (newIdentifier != null)
-        {
-            _identifier = newIdentifier;
-        }
-    }
-	public Menu parentMenu=null;
-    
-    public MenuElement(float x,float y)
-    {
-    	super(x,y);
-        parentMenu=null;
-    }
+	public void setIdentifier(String newIdentifier){
+		if (newIdentifier != null)
+		{
+			_identifier = newIdentifier;
+		}
+	}
 
+	//Coordinates relative to gui camera;
 	public float ax(){
 		return x;
 	}
@@ -40,7 +44,7 @@ public class MenuElement extends ViewableObject {
 	public float ay(){
 		return y;
 	}
-
+	//Is the user tapping the element?
 	public boolean isTapOver(float tapX,float tapY){
 		if(shapeCollider==null){
 			return true;
@@ -50,7 +54,17 @@ public class MenuElement extends ViewableObject {
 
 
 
-	public static Shape2D fingerCollider=new Rectangle(-32,-32,64,64);
+
+    
+    public MenuElement(float x,float y)
+    {
+    	super(x,y);
+        parentMenu=null;
+    }
+
+
+
+
 
 	public void onGlobalTap(float x, float y){
 

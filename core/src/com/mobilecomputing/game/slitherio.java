@@ -17,34 +17,10 @@ import com.mobilecomputing.game.network.Bluetooth.BluetoothConnection;
 import com.mobilecomputing.game.shareScores.ShareScores;
 
 public class slitherio extends ApplicationAdapter implements InputProcessor {
-	/*SpriteBatch batch;
-	Texture img;
-
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-		int screenWidth=Gdx.graphics.getWidth();
-		int screenHeight=Gdx.graphics.getHeight();
-		System.out.println("screenWidth "+screenWidth);
-		System.out.println("screenHeight "+screenHeight);
-
-	}
-
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
-	}
-	*/
 
 	SpriteBatch batch;
-	//Texture img;
-	public static int screenWidth;
-	public static int screenHeight;
+
+	//Multiplayer stuff;
 	public static BluetoothConnection bluetoothConnection;
 	public static ShareScores shareScores;
 	public static boolean isNetGame = false;
@@ -59,16 +35,6 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	}
 	@Override
 	public void create () {
-
-		/*File dir = new File(".");
-		File[] filesList = dir.listFiles();
-		for (File file : filesList) {
-			if (file.isFile()) {
-				System.out.println(file.getName());
-			}
-		}
-		*/
-
 		FileHandle dirHandle;
 		if (Gdx.app.getType() == Application.ApplicationType.Android)
 		{
@@ -112,32 +78,8 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 			}
 		}
 	}
-/*
 
-
-	void displayFiles (AssetManager mgr, String path, int level) {
-
-		Log.v(TAG,"enter displayFiles("+path+")");
-		try {
-			String list[] = mgr.list(path);
-			Log.v(TAG,"L"+level+": list:"+ Arrays.asList(list));
-
-			if (list != null)
-				for (int i=0; i<list.length; ++i)
-				{
-					if(level>=1){
-						displayFiles(mgr, path + "/" + list[i], level+1);
-					}else{
-						displayFiles(mgr, list[i], level+1);
-					}
-				}
-		} catch (IOException e) {
-			Log.v(TAG,"List error: can't list" + path);
-		}
-
-	}
-	*/
-
+	//Diagnostic Stuff For Frame Rate:
     public static float framesForUpdateDoubled = 0;
 	public static int countUPS=0;
 	public static float lastUPS=0;
@@ -145,7 +87,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	public static float tDiff=0;
 	@Override
 	public void render () {
-
+		//Find out how many milliseconds and how many frames have passed since the last render;
 		float deltaTime= Gdx.graphics.getDeltaTime();
 		tDiff +=(deltaTime*1000);
 		if (tDiff > 1000)
@@ -156,10 +98,12 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 			countUPS = 0;
 		}
 
-		//UGameLogic.LogMsg("time delta"+deltaTime);
+
 		float lastFrameDiff = deltaTime*60f;
-		//UGameLogic.LogMsg("last frame diff"+lastFrameDiff);
+
 		boolean allowDoublingOfFrames=true;
+		//The game uses adaptive update rates on slower devices (to allow for smoothing).
+		//I.e. a device that renders at 45fps will have 50% more update iterations in the same period.
 		 double minExpectedSpeed = 1;
         if (allowDoublingOfFrames)
         {
@@ -182,6 +126,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
                 if (framesForUpdateDoubled >= 1f)
                 {
                     framesForUpdateDoubled -= 1f;
+					//Frame rate to slow? increase update rate accordingly;
                     Controller.update();
                 }
 
@@ -189,9 +134,9 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
         }
 
 		
-		
+		//Game Logic stuff like reactive menus, moving objects and hit detection.
 		Controller.update();
-		//UGameLogic.LogMsg("Rendering");
+		//Drawing stuff to the screen
 		Controller.render();
 
 	}
@@ -202,7 +147,8 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 		//img.dispose();
 	}
 
-	//Vector3 tp = new Vector3();
+
+	//Touch and Input Events;
 	public static boolean dragging;
 	@Override public boolean mouseMoved (int screenX, int screenY) {
 		// we can also handle mouse movement without anything pressed
@@ -210,13 +156,14 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 		return false;
 	}
 
-
+	//GUI coordinate of right most point of the screen (nescessary due to adaptive camera scaling).
 	public static float RightGuiScreenX(){
 	
 		float val=Controller.guiCam.unproject(new Vector3(Controller.screenWidth,0,0)).x;
 		return val;
 	}
-	
+
+	//GUI coordinate of right most point of the screen (nescessary due to adaptive camera scaling).
 	public static float LeftGuiScreenX(){
 		return Controller.guiCam.unproject(new Vector3(0,0,0)).x;
 		
@@ -304,4 +251,56 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	@Override public boolean scrolled (int amount) {
 		return false;
 	}
+	//Texture img;
+	//public static int screenWidth;
+	//public static int screenHeight;
+/*
+
+
+	void displayFiles (AssetManager mgr, String path, int level) {
+
+		Log.v(TAG,"enter displayFiles("+path+")");
+		try {
+			String list[] = mgr.list(path);
+			Log.v(TAG,"L"+level+": list:"+ Arrays.asList(list));
+
+			if (list != null)
+				for (int i=0; i<list.length; ++i)
+				{
+					if(level>=1){
+						displayFiles(mgr, path + "/" + list[i], level+1);
+					}else{
+						displayFiles(mgr, list[i], level+1);
+					}
+				}
+		} catch (IOException e) {
+			Log.v(TAG,"List error: can't list" + path);
+		}
+
+	}
+	*/
+		/*SpriteBatch batch;
+	Texture img;
+
+	@Override
+	public void create () {
+		batch = new SpriteBatch();
+		img = new Texture("badlogic.jpg");
+		int screenWidth=Gdx.graphics.getWidth();
+		int screenHeight=Gdx.graphics.getHeight();
+		System.out.println("screenWidth "+screenWidth);
+		System.out.println("screenHeight "+screenHeight);
+
+	}
+
+	@Override
+	public void render () {
+		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		batch.draw(img, 0, 0);
+		batch.end();
+	}
+	*/
+
 }
