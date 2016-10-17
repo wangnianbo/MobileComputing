@@ -100,9 +100,10 @@ ArrayList<SpriteImageData> addImages=new ArrayList<SpriteImageData>();
 	
 	@Override
 	public void render(){
-		SpriteImageData.ResetProperties();
-		FontController.DrawString("A Word From Our Sponsors...",Controller.projectionHeight/2,0);
 
+		FontController.fontSize=20;
+		FontController.DrawString("A Word From Our Sponsors...",Controller.projectionHeight/2,3);
+		SpriteImageData.ResetProperties();
 		delayBeforeSwitch--;
 		if(delayBeforeSwitch<0){
 			delayBeforeSwitch=maxDelayBeforeSwitch;

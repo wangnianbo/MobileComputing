@@ -3,6 +3,7 @@ package com.mobilecomputing.game.GameObjects;
 import com.badlogic.gdx.math.Rectangle;
 import com.mobilecomputing.game.Controller;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
+import com.mobilecomputing.game.FontController;
 import com.mobilecomputing.game.WormSkins.*;
 import com.mobilecomputing.game.UGameLogic;
 import com.mobilecomputing.game.menus.GameOverMenu;
@@ -22,6 +23,7 @@ public class WormTemplate extends LegacyGameObject {
 	public WormSkin skin=defaultSkin;
     int pointsPerSegment=20;
     public int wormLength;
+    public String name="";
     
     
     public WormTemplate(float x, float y, WormSegment startingSegment)
@@ -210,6 +212,11 @@ public class WormTemplate extends LegacyGameObject {
 
 
         head.render();
+        FontController.ResetProperties();
+        FontController.centeredX=true;
+        if(name!=null && name.length()>0){
+        	FontController.DrawString(name,x,y-32);
+        }
     }
 
     @Override

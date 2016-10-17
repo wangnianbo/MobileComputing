@@ -2,7 +2,9 @@ package com.mobilecomputing.game.GameObjects;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
+import com.mobilecomputing.game.Controller;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
+import com.mobilecomputing.game.UGameLogic;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -19,15 +21,26 @@ public class Pellet extends LegacyGameObject{
     public Pellet(float x, float y){
         super(x,y);
         //For detecting collisions
+        Random random= Controller.spawnRandom;
+        value=1+random.nextInt(4);
+        construct();
+    }
 
+    public Pellet(float x, float y,int value) {
+        super(x, y);
+        this.value=value;
+        construct();
+    }
+
+    public void construct(){
         //Determine color;
         //Draw an image
+        Random random= Controller.spawnRandom;
         pelletId=lastAssignedPelletId+1;
-        
+
         lastAssignedPelletId++;
-        
-        Random random=new Random();
-        value=1+random.nextInt(4);
+
+
         float s=(float)Math.sqrt(value);
         value=value*2;
         shapeCollider=new Rectangle(-11*s,-11*s,22*s,22*s);

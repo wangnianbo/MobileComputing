@@ -327,7 +327,9 @@ public class World {
 	}
 
 	public int waitSize=0;
-	public boolean dueForNextTurn=false;
+	//public boolean dueForNextTurn=false;
+	public static final int maxGameOverTimer=UGameLogic.lengthOfSecond*2;
+	private static int gameOverTimer=maxGameOverTimer;
 	public void update(){
 		manageHitDetectionUpdate();
 		updateGameObjects(activeLocalObjects);
@@ -351,12 +353,19 @@ public class World {
 				cameraZoomRatio = cameraZoomRatio - zoomDiff;
 			}
 		}
-		if(activeCharacter!=null && activeCharacter.destroyed && !(Controller.activeMenu instanceof AdvertisementMenu)){
-			if(AdvertisementMenu.advertismentsOn){
-				Controller.activeMenu=new AdvertisementMenu(0,0);
-			}
-			else{
-				Controller.swapGameMode(GameMode.SPLASH);
+		if(activeCharacter!=null && activeCharacter.destroyed){
+			if( !(Controller.activeMenu instanceof AdvertisementMenu)){
+				gameOverTimer--;
+				if(gameOverTimer<0){
+					gameOverTimer=maxGameOverTimer;
+				
+					if(AdvertisementMenu.advertismentsOn){
+						Controller.activeMenu=new AdvertisementMenu(0,0);
+					}
+					else{
+						Controller.swapGameMode(GameMode.SPLASH);
+					}
+				}
 			}
 
 		}

@@ -2,6 +2,7 @@ package com.mobilecomputing.game.GameObjects;
 
 import com.badlogic.gdx.graphics.Color;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
+import com.mobilecomputing.game.Controller;
 import com.mobilecomputing.game.UGameLogic;
 
 /**
@@ -10,7 +11,7 @@ import com.mobilecomputing.game.UGameLogic;
 public class FadingSegment extends LegacyGameObject{
     public WormSegment segment;
     public WormHead head;
-    public int maxLifeTimer= UGameLogic.lengthOfSecond*2;
+    public int maxLifeTimer= UGameLogic.lengthOfSecond*3/2;
     public int lifeTimer;
     public FadingSegment(WormSegment segment){
         super(segment.x,segment.y);
@@ -73,7 +74,7 @@ public class FadingSegment extends LegacyGameObject{
             segment.x = x;
             segment.y = y;
         }
-        if(head!=null){
+        else if(head!=null){
             head.x=x;
             head.y=y;
         }
@@ -100,6 +101,16 @@ public class FadingSegment extends LegacyGameObject{
         }
 
 
+    }
+
+    @Override
+    public void onDeath(){
+        super.onDeath();
+        if(getWorld()!=null){
+
+        		getWorld().addObject(new Pellet(x,y,1));
+        	
+        }
     }
 
 

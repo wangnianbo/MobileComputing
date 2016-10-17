@@ -5,6 +5,7 @@ import com.mobilecomputing.game.Controller.GameMode;
 import com.mobilecomputing.game.FontController;
 import com.mobilecomputing.game.SoundController;
 import com.mobilecomputing.game.UGameLogic;
+import com.mobilecomputing.game.slitherio;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
 import com.mobilecomputing.game.network.Bluetooth.BluetoothConnection;
 
@@ -16,7 +17,7 @@ public class LaunchMenu extends Menu {
 		lastSpecialMessage=newMessage;
 		countdownForLastMessage=UGameLogic.lengthOfSecond*3;
 	}
-	
+	ImageButton settingsButton;
 	public LaunchMenu(float x, float y, BluetoothConnection bluetoothConnection){
 		super(x,y);
 		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight/3,SpriteImageData.GetByName("ui/button_localGame"),"local"));
@@ -24,7 +25,8 @@ public class LaunchMenu extends Menu {
 		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*7/9,SpriteImageData.GetByName("ui/button_ShareScore"),"shareScore"));
 		//addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*5/6,SpriteImageData.GetByName("ui/button_Settings"),"settings"));
 		SpriteImageData settingsImage=SpriteImageData.GetByName("ui/settingsGear");
-		ImageButton settingsButton=new ImageButton(Controller.projectionWidth-32,Controller.projectionHeight-32,settingsImage,"settings");
+		//Create settings button;
+		settingsButton=new ImageButton(slitherio.RightGuiScreenX() -32,Controller.projectionHeight-32,settingsImage,"settings");
 		settingsButton.setScale(32/((float)settingsImage.getWidth()),32/(float)settingsImage.getWidth());
 		settingsButton.setCentered(false);
 		addElement(settingsButton);
@@ -79,6 +81,7 @@ public class LaunchMenu extends Menu {
 	
 	public void update(){
 		super.update();
+		settingsButton.x=slitherio.RightGuiScreenX() -32;
 		countdownForLastMessage--;
 		/*
 		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.mobilecomputing.game.Controller;
 import com.mobilecomputing.game.UGameLogic;
+import com.mobilecomputing.game.slitherio;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class Menu extends MenuElement{
 		if(backButton==null){
 			SpriteImageData backImage=SpriteImageData.GetByName("ui/backButton");
 		
-			backButton=new ImageButton(0,0,backImage,"back");
+			backButton=new ImageButton(slitherio.LeftGuiScreenX() ,0,backImage,"back");
 			float s=32/(float)(backImage.getHeight());
 			backButton.setScale(s, s);
 			backButton.setCentered(false);

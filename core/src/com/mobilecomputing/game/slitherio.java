@@ -211,6 +211,17 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	}
 
 
+	public static float RightGuiScreenX(){
+	
+		float val=Controller.guiCam.unproject(new Vector3(Controller.screenWidth,0,0)).x;
+		return val;
+	}
+	
+	public static float LeftGuiScreenX(){
+		return Controller.guiCam.unproject(new Vector3(0,0,0)).x;
+		
+	}
+	
 	public static float lastGuiTapX =Controller.projectionWidth/2;
 	public static float lastGuiTapY =0;
 	public static float lastWorldTapX=Controller.projectionWidth/2;
@@ -218,6 +229,8 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	public static float lastWorldDragX=Controller.projectionWidth/2;
 	public static float lastWorldDragY=0;
 
+	
+	
 
 	@Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		// ignore if its not left mouse button or first touch pointer
