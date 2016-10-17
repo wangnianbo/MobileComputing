@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mobilecomputing.game.Drawables.GlobalAnimations;
 import com.mobilecomputing.game.Drawables.SpriteImageData;
-
+import com.mobilecomputing.game.WormSkins.WormSkin;
 import com.mobilecomputing.game.menus.DefaultGameHud;
 import com.mobilecomputing.game.menus.LaunchMenu;
 import com.mobilecomputing.game.menus.Menu;
@@ -26,6 +26,10 @@ public class Controller {
 	public static SpriteBatch batch;
 	public static World world;
 	public static World prevWorld;
+	public static int lastScore= 0;
+	public static int hiScore=0;
+
+	
 	public static World SetWorld(World newWorld){
 		if(world == null){
 			prevWorld=newWorld;
@@ -243,13 +247,10 @@ public class Controller {
 					case share_scores:
 						_shareScores.alreadyShared();
 						//world=new World();
-						int high_score = 0;
-						if(prevWorld != null){
-							high_score = prevWorld.activeCharacter.getScore();
-						}
 
-						_shareScores.shareSconresOnSocialMedia("I just played slither and got a length of "+high_score+"! Can you beat that?");
 
+						_shareScores.shareSconresOnSocialMedia("I just played slither and got a length of "+hiScore+"! Can you beat that?");
+						WormSkin.unlockSkins();
 
 						//activeMenu=new DefaultGameHud(0,0);
 						//world=new World();

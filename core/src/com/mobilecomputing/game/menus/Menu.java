@@ -2,7 +2,9 @@ package com.mobilecomputing.game.menus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.mobilecomputing.game.Controller;
 import com.mobilecomputing.game.UGameLogic;
+import com.mobilecomputing.game.Drawables.SpriteImageData;
 
 import java.util.ArrayList;
 
@@ -39,12 +41,29 @@ public class Menu extends MenuElement{
 
 	}
 
-
+	public Menu prevGameMenu=null;
 
 
 
 	public void onBackPressed(){
+		if(prevGameMenu!=null){
+			Controller.activeMenu=prevGameMenu;
+		}
 		UGameLogic.LogMsg("Back Pressed");
+	}
+	
+	public ImageButton backButton=null;
+	public void addBackButton(){
+		if(backButton==null){
+			SpriteImageData backImage=SpriteImageData.GetByName("ui/backButton");
+		
+			backButton=new ImageButton(0,0,backImage,"back");
+			float s=32/(float)(backImage.getHeight());
+			backButton.setScale(s, s);
+			backButton.setCentered(false);
+			addElement(backButton);
+			
+		}
 	}
 
 
@@ -70,7 +89,9 @@ public class Menu extends MenuElement{
 	}
 	
 	public void receiveMessage(MenuElement element,String message){
-		
+		if(message!=null && message.toLowerCase().equals("back")){
+			onBackPressed();
+		}
 	}
 
 

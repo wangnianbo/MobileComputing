@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.mobilecomputing.game.UGameLogic;
 import com.mobilecomputing.game.GameObjects.WormHead;
 import com.mobilecomputing.game.GameObjects.WormSegment;
+import com.mobilecomputing.game.menus.LaunchMenu;
 
 public abstract class WormSkin {
 
@@ -37,13 +38,31 @@ public abstract class WormSkin {
 			_allSkins=new ArrayList<WormSkin>();
 			_allSkins.add(chameleonSkin2);
 			_allSkins.add(chameleonSkin1);
-			_allSkins.add(new WormSkin_BlackAndGold());
+
 			_allSkins.add(new WormSkin_Pokey(true));
 			_allSkins.add(new WormSkin_Pokey(false));
+
 			_allSkins.add(new WormSkin_Christmas());
-			_allSkins.add(new WormSkin_SimpleColor(new Color(UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,1)));
+
+			_allSkins.add(new WormSkin_SimpleColor(new Color(1,0,0,1)));
+			_allSkins.add(new WormSkin_SimpleColor(new Color(0,1,0,1)));
+			_allSkins.add(new WormSkin_SimpleColor(new Color(0,0,1,1)));
+
 		}
 		return _allSkins;
+	}
+	
+	private static boolean extraSkinsUnlocked=false;
+	public static void unlockSkins(){
+		LaunchMenu.setLastMessage("New Skins Unlocked :D!!!");
+		
+		if(!extraSkinsUnlocked){
+			ArrayList<WormSkin> skins=allSkins();
+			skins.add(new WormSkin_BlackAndGold());
+			skins.add(new WormSkin_SimpleColor(new Color(UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,UGameLogic.effectsRandom.nextFloat()*0.9f+0.1f,1)));
+			skins.add(new WormSkin_SimpleColor(new Color(0.1f,0.1f,0.1f,1)));
+			extraSkinsUnlocked=true;
+		}		
 	}
 }
 

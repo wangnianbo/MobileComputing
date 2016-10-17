@@ -38,6 +38,7 @@ public class GameOverMenu extends Menu {
         super.render();
         FontController.ResetProperties();
         FontController.fontSize=40;
+		FontController.centeredX=true;
         FontController.DrawString("Game Over",Controller.projectionWidth/2,Controller.projectionHeight/8);
         FontController.fontSize=20;
 

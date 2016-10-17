@@ -52,7 +52,8 @@ public class DefaultGameHud extends Menu {
 				}
 			}
 			
-			FontController.DrawString("SCORE "+ score+"   RANK "+rank+"/"+wormCount+"     FPS:"+ Gdx.graphics.getFramesPerSecond()+" UPS: "+(int)slitherio.lastUPS,Controller.projectionWidth/2-10, 10);
+			FontController.centeredX=true;
+			FontController.DrawString("SCORE "+ score+"   RANK "+rank+"/"+wormCount+"    UPS: "+(int)slitherio.lastUPS,Controller.projectionWidth/2-10, 10);
 		}
 		FontController.ResetProperties();
 	}

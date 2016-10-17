@@ -10,15 +10,33 @@ import com.mobilecomputing.game.network.Bluetooth.BluetoothConnection;
 
 public class LaunchMenu extends Menu {
 	private BluetoothConnection bluetoothConnection;
+	public static int countdownForLastMessage=UGameLogic.lengthOfSecond;
+	private static String lastSpecialMessage="";
+	public static void setLastMessage(String newMessage){
+		lastSpecialMessage=newMessage;
+		countdownForLastMessage=UGameLogic.lengthOfSecond*3;
+	}
+	
 	public LaunchMenu(float x, float y, BluetoothConnection bluetoothConnection){
 		super(x,y);
 		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight/3,SpriteImageData.GetByName("ui/button_localGame"),"local"));
-		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*2/4,SpriteImageData.GetByName("ui/button_BluetoothGame"),"Bluetooth Game"));
-		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*2/3,SpriteImageData.GetByName("ui/button_ShareScore"),"shareScore"));
-		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*5/6,SpriteImageData.GetByName("ui/button_Settings"),"settings"));
+		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*5/9,SpriteImageData.GetByName("ui/button_BluetoothGame"),"Bluetooth Game"));
+		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*7/9,SpriteImageData.GetByName("ui/button_ShareScore"),"shareScore"));
+		//addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*5/6,SpriteImageData.GetByName("ui/button_Settings"),"settings"));
+		SpriteImageData settingsImage=SpriteImageData.GetByName("ui/settingsGear");
+		ImageButton settingsButton=new ImageButton(Controller.projectionWidth-32,Controller.projectionHeight-32,settingsImage,"settings");
+		settingsButton.setScale(32/((float)settingsImage.getWidth()),32/(float)settingsImage.getWidth());
+		settingsButton.setCentered(false);
+		addElement(settingsButton);
+		
 		//addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight*3/4,SpriteImageData.GetByName("ui/button_hostGame"),"host"));
 		this.bluetoothConnection = bluetoothConnection;
 			SoundController.PlaySound("explosion");
+			
+				if(Controller.prevWorld != null){
+					Controller.lastScore = Controller.prevWorld.activeCharacter.getScore();
+				}
+				Controller.hiScore=Math.max(Controller.lastScore, Controller.hiScore);
 			}
 
 
@@ -51,7 +69,9 @@ public class LaunchMenu extends Menu {
 				UGameLogic.LogMsg("Host Game");
 			break;
 			case "settings":
-				Controller.activeMenu=new SkinsMenu(0,0); 
+				
+				Controller.activeMenu=new SettingsMenu(0,0,this); 
+				
 			break;
 		}
 
@@ -59,6 +79,7 @@ public class LaunchMenu extends Menu {
 	
 	public void update(){
 		super.update();
+		countdownForLastMessage--;
 		/*
 		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
 			setSelectedIndex(getSelectedIndex()-1);
@@ -84,6 +105,14 @@ public class LaunchMenu extends Menu {
 	public void render(){
 		SpriteImageData.ResetProperties();
 		SpriteImageData.Draw("title",Controller.projectionWidth/2,Controller.projectionHeight/8);
+		FontController.centeredX=true;
+
+		FontController.DrawString("Last Score "+Controller.lastScore+"   Best Score: "+Controller.hiScore, Controller.projectionWidth/2,100);
+		if(countdownForLastMessage>0){
+			FontController.centeredX=true;
+
+			FontController.DrawString(lastSpecialMessage, Controller.projectionWidth/2,Controller.projectionHeight-FontController.fontSize);
+		}
 		super.render();
 
 

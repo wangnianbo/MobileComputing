@@ -51,6 +51,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 	public static boolean jumpInMultiplayer=false;
 	public slitherio(){
 		this.bluetoothConnection = null;
+
 	}
 	public slitherio(BluetoothConnection bluetoothConnection, ShareScores shareScores){
 		this.bluetoothConnection = bluetoothConnection;
@@ -85,7 +86,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 			UGameLogic.LogMsg("handle "+dirHandle);
 		}*/
 		getHandles(dirHandle,handles);
-
+		Gdx.input.setCatchBackKey(true);
 		Controller.initializeGame(bluetoothConnection, shareScores);
 		Gdx.input.setInputProcessor(this);
 		//RecurseDirectory("bin"+ File.separator +"images","bin"+File.separator);

@@ -24,8 +24,11 @@ public class SkinsMenu extends Menu{
 	public WormSkin skin;
 	private World world;
 
-	public SkinsMenu(float x,float y){
+	public SkinsMenu(float x,float y,Menu prevMenu){
 		super(x,y);
+
+		prevGameMenu=prevMenu;
+		addBackButton();
 		world=new World(false,true);
 		world.width=2560;
 		world.height=2560;
@@ -36,14 +39,14 @@ public class SkinsMenu extends Menu{
 		cycleLeft.rotation=90;
 		cycleRight=new ImageButton(Controller.projectionWidth-arrow.getWidth()/2,Controller.projectionHeight/2,arrow,"right");
 		cycleRight.rotation=270;
-		backButton=new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight-32,SpriteImageData.GetByName("ui/button_close"),"back");
+		//backButton=new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight-32,SpriteImageData.GetByName("ui/button_close"),"back");
 		addElement(cycleLeft);
 		addElement(cycleRight);
-		addElement(backButton);
+		//addElement(backButton);
 		worm=new WormTemplate_SkinDemo(Controller.projectionWidth/2,50,40);
 		world.addObject(worm);
-		
-		
+		SpriteImageData confirmImage=SpriteImageData.GetByName("ui/button_confirm");
+		addElement(new ImageButton(Controller.projectionWidth/2,Controller.projectionHeight-confirmImage.getHeight()/2,confirmImage,"confirm"));
 
 	
 		worm.skin =WormSkin.chosenSkin();
@@ -61,10 +64,11 @@ public class SkinsMenu extends Menu{
 			case "right":
 				WormSkin.IncrementSkinOffset();
 			break;
-			case "back":
-				Controller.swapGameMode(GameMode.SPLASH); 
-			break;
 
+			case "confirm":
+
+				onBackPressed();
+			break;
 		}
 		worm.skin =WormSkin.chosenSkin();
 	}
