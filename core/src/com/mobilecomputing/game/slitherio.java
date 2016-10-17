@@ -86,7 +86,7 @@ public class slitherio extends ApplicationAdapter implements InputProcessor {
 			UGameLogic.LogMsg("handle "+dirHandle);
 		}*/
 		getHandles(dirHandle,handles);
-		Gdx.input.setCatchBackKey(true);
+
 		Controller.initializeGame(bluetoothConnection, shareScores);
 		Gdx.input.setInputProcessor(this);
 		//RecurseDirectory("bin"+ File.separator +"images","bin"+File.separator);
